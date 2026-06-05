@@ -1,0 +1,12 @@
+﻿severity,category,title,evidence,owner,status,next_action,date_found
+Critical,Authentication,Public admin auth uses plaintext client-side credentials,"Prototype admin page imported plaintext members.json and logs submitted credentials; MokseRevamp import neutralized members.json",Unassigned,Contained,"Replace with server-side auth; keep placeholder credentials out of source",2026-06-05
+Critical,Secrets,Prototype contains untracked env.download with Notion values,"env.download exists in MokseWebsite and is excluded from MokseRevamp copy",Unassigned,Contained,"Keep ignored, rotate if ever shared or committed",2026-06-05
+Critical,Notion,Live Notion schema mismatch,"Code reads url ( link ) and verificationDate while database exposes Link and Verification Date",Unassigned,Open,"Align API mapping to production Notion schema",2026-06-05
+High,Notion,No cache or rate-limit protection for Notion API,"API route fetches Notion on demand without revalidate/cache headers/rate limiting",Unassigned,Open,"Add Vercel Data Cache/static generation and timeout handling",2026-06-05
+High,Observability,Sentry not connected,"No Sentry SDK or new project env vars are configured",Unassigned,Open,"Create Sentry project and add DSN via Vercel",2026-06-05
+High,Tooling,Production tooling not connected to new repo,"Existing integrations are tied to old developer/repo environment",Unassigned,Open,"Connect tooling only after MokseRevamp exists",2026-06-05
+Medium,CI,GitHub security workflows need repo-specific setup,"Existing prototype workflows are not aligned to the new clean repo",Unassigned,Open,"Enable CodeQL, Dependabot, dependency review, and secret scanning",2026-06-05
+Medium,Quality,Lint failures remain,"Source audit found npm run lint failing",Unassigned,Open,"Fix lint errors after clean repo is established",2026-06-05
+
+Medium,Dependencies,Dependency audit reports 3 moderate advisories,"npm audit --audit-level=moderate reports brace-expansion and postcss/next advisory chain",Unassigned,Open,"Review upgrade path; avoid npm audit fix --force without compatibility testing",2026-06-05
+Medium,Quality,MokseRevamp lint fails,"npm run lint reports 10 errors and 44 warnings",Unassigned,Open,"Resolve lint errors before production readiness signoff",2026-06-05

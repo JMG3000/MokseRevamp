@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "url": "https://findtreatment.gov/",
+    "description": "Find treatment facilities in the United States or U.S. Territories for substance abuse/addiction and/or mental health problems."
+  },
+  {
+    "id": 2,
+    "url": "www.careeronestop.org/",
+    "description": "Help finding second chance employers by location"
+  },
+  {
+    "id": 3,
+    "url": "www.hudexchange.info/",
+    "description": "Housing and homeless shelters by location"
+  },
+  {
+    "id": 4,
+    "url": "www.hirefelons.org/",
+    "description": "Hiring resources for felons"
+  },
+  {
+    "id": 5,
+    "url": "https://www.spl.org/programs-and-services/civics-and-social-services/resources-for-the-formerly-incarcerated",
+    "description": "Information about resources available to the formerly incarcerated"
+  },
+  {
+    "id": 6,
+    "url": "www.goodwill.org/",
+    "description": "Goodwill has re entry jobs and training services"
+  },
+  { "id": 7, "url": "www.salvationarmyusa.org/", "description": "Resources" },
+  { "id": 8, "url": "www.foodfinder.us/", "description": "Resources" },
+  {
+    "id": 9,
+    "url": "https://georeentryconnect.com/",
+    "description": "General resources by state"
+  },
+  {
+    "id": 10,
+    "url": "www.honestjobs.com/",
+    "description": "Job seekers center for community transitions"
+  },
+  {
+    "id": 11,
+    "url": "https://centerforcommunitytransitions.org/",
+    "description": "Center for Community Transitions"
+  },
+  { "id": 12, "url": "www.indeed.com/", "description": "Job search" }
+]

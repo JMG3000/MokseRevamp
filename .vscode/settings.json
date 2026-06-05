@@ -1,0 +1,5 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib", // i get this error: This setting is deprecated. Use js/ts.tsdk.path instead.
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+
+}
