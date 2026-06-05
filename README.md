@@ -1,142 +1,98 @@
-# Mokse Educational Service Website
+# MokseRevamp
 
-This is a [Next.js](https://nextjs.org/) project containerized with Docker and MongoDB, built for local development and easy deployment.
-The stack includes:
+MokseRevamp is the clean production-prep repository for the Mokse website. It was imported from the working prototype with a fresh Git history so it is not linked to the old `MokseWebsite` repository history.
 
-- Next.js 14+
-- Node.js 20 (Alpine)
-- MongoDB 7 (containerized)
-- Docker Compose (single-file setup for dev & prod)
+## Current Architecture
 
-## Getting Started
+- **Framework:** Next.js 16 App Router
+- **Router shape:** `app/` directory only; no `pages/`, `src/app/`, or `src/pages/`
+- **UI:** React 19, Chakra UI 3, custom shared UI components
+- **Primary backend dependency:** Notion API for live resource data
+- **Deployment target:** Vercel
+- **Workflow tooling:** GitHub Actions, CodeQL, Dependabot, CodeRabbit CLI, Meticulous, Linear (`JAK-5`)
+- **Observability/testing in progress:** Meticulous visual/session regression workflow; Sentry still pending
 
-1️⃣ Prerequisites
+## Important Directories
 
-Make sure you have these installed:
-
-- [Docker & Docker Compose](https://docs.docker.com/get-docker/)
-- [Node.js 20+](https://nodejs.org/) (optional for local non-Docker testing)
-- [MongoDB Compass](https://www.mongodb.com/try/download/compass) (optional GUI)
-
-2️⃣ Environment Setup
-
-Copy the example environment file and adjust values if needed:
-
-```bash
-cp .env.example .env
+```text
+app/                         Next.js App Router routes and route groups
+app/(API Routes)/api/        API route handlers
+app/(Public Pages)/          Public site route group
+app/(Admin Dashboard)/       Disabled admin route group pending production auth
+components/                  Shared UI and feature components
+components/tooling/          Tooling scripts/components such as Meticulous recorder
+data/                        Static content/data modules
+public/                      Static assets
+docs/audits/                 Dated audit outputs
+docs/tooling/                Tooling setup and workflow runbooks
+.github/workflows/           CI, CodeQL, and Meticulous workflows
 ```
 
-Update secrets (especially for production):
+## Notion Dependency
 
-```bash
-MONGO_ROOT_PASS=your-secure-password
-MONGO_APP_PASS=your-secure-password
+The live resources experience depends on Notion. Production deployments must define these server-only environment variables in Vercel:
+
+```text
+NOTION_TOKEN
+NOTION_DATABASE_KEY
+NOTION_BASE_URL
 ```
 
-3️⃣ Start the Project (Docker)
+Do not commit Notion tokens or pulled env files. Local secret files such as `.env*`, `env.download`, `SECRET_README.md`, and `README.secret.md` are ignored.
 
-Run the full stack — Next.js + MongoDB — with one command:
+## Meticulous
 
-```bash
-docker compose up --build
+This repo uses the Meticulous Next.js App Router setup. Because the app currently has route-group layouts instead of a single root `app/layout.tsx`, the recorder is installed in both:
+
+```text
+app/(Public Pages)/layout.tsx
+app/(Admin Dashboard)/layout.tsx
 ```
 
-After it builds, visit:
+Required GitHub configuration:
 
-[http://localhost:3000](http://localhost:3000)
-
-This will:
-
-- Start the web container in hot-reload dev mode.
-- Start the mongo container with persistent data stored in a local volume.
-- Auto-create a MongoDB appuser for your web app.
-
-4️⃣ Local Development Commands
-
-To view container status:
-
-```bash
-docker compose ps
+```text
+Secret: METICULOUS_API_TOKEN
+Repository variable or deployment env var: NEXT_PUBLIC_METICULOUS_PROJECT_ID
 ```
 
-To open Mongo shell inside the container:
+The recorder script renders only when `NEXT_PUBLIC_METICULOUS_PROJECT_ID` is set.
 
-```bash
-docker exec -it mongo mongosh -u root -p changeme --authenticationDatabase admin
+## CodeRabbit
+
+CodeRabbit CLI is installed inside WSL on this machine. From PowerShell, run it through WSL:
+
+```powershell
+wsl.exe bash -lc "cd /mnt/d/repos/codex-projects/MokseRevamp && cr auth status --agent"
+wsl.exe bash -lc "cd /mnt/d/repos/codex-projects/MokseRevamp && cr review --agent --base main"
 ```
 
-To inspect Mongo logs:
+CodeRabbit reviews send repository diff/code content to CodeRabbit. Only run reviews when that data sharing is intended.
 
-```bash
-docker compose logs mongo | tail -n 20
+## Local Development
+
+```powershell
+npm ci
+npm run dev
+npm run typecheck
+npm run lint
+npm run build
+npm audit --audit-level=moderate
 ```
 
-5️⃣ Connect with MongoDB Compass (Optional)
+Open the app at:
 
-If you want to browse your data visually, connect using:
-
-```bash
-mongodb://root:changeme@localhost:27017/mokse?authSource=admin
+```text
+http://localhost:3000
 ```
 
-Replace credentials as needed.
+## Production Readiness Checklist
 
-6️⃣ Switching to Production Mode
-
-Build and run with optimized production settings:
-
-```bash
-export COMPOSE_PROFILES=prod BUILD_TARGET=runner NODE_ENV=production
-docker compose --env-file .env up --build -d
-```
-
-This will:
-
-- Use the runner stage from the Dockerfile.
-- Disable bind mounts and hot reload.
-- Keep Mongo isolated (port not exposed if MONGO_PORT is blank).
-
-## Project Structure
-
-```init
-.
-├── Dockerfile
-├── docker-compose.yml
-├── .env.example
-├── docker/
-│   └── mongo/
-│       └── init/
-│           └── 01-create-app-user.js
-├── app/
-│   ├── layout.tsx
-│   └── page.tsx
-├── public/
-├── package.json
-└── README.md
-```
-
-## Environment Variables
-
-|Variable | Description | Default |
-|-----------|---------------|---------|
-|COMPOSE_PROFILES | Compose profile (dev or prod) | dev |
-|BUILD_TARGET | Docker build stage (dev or runner) | dev |
-|APP_PORT | Port exposed on host | 3000 |
-|NODE_ENV | Node environment | development |
-|MONGO_PORT | Mongo host port (omit for prod) | 27017 |
-|MONGO_DB | Database name | mokse |
-|MONGO_ROOT_USER | Root Mongo user | root |
-|MONGO_ROOT_PASS | Root password | changeme |
-|MONGO_APP_USER | App DB user | appuser |
-|MONGO_APP_PASS | App DB password | apppass |
-|MONGODB_URI | App Mongo connection string | `mongodb://${MONGO_APP_USER}:${MONGO_APP_PASS}@mongo:27017/${MONGO_DB}?authSource=admin` |
-
-## Useful Commands
-
-| Task | Command |
-|------|---------|
-| Rebuild containers | docker compose build |
-| Restart stack | docker compose restart |
-| Stop containers | docker compose down |
-| Remove all volumes | docker compose down -v |
-| Shell into web container | docker exec -it $(docker compose ps -q web) sh |
+- Connect Vercel to `JMG3000/MokseRevamp`
+- Configure Vercel Notion env vars
+- Configure `NEXT_PUBLIC_METICULOUS_PROJECT_ID`
+- Keep `METICULOUS_API_TOKEN` in GitHub Actions secrets only
+- Keep local secret notes in ignored files only
+- Replace the disabled admin placeholder with production auth before launch
+- Complete Sentry setup
+- Resolve or intentionally defer remaining lint warnings

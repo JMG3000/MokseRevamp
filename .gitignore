@@ -50,3 +50,7 @@ env.download
 secrets/
 *.env
 *.env.*
+
+SECRET_README.md
+README.secret.md
+*.secret.md
