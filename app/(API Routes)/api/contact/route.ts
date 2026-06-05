@@ -14,13 +14,11 @@ interface ErrorResponse {
 
 interface SuccessResponse {
   message: string;
-  data: ContactFormData;
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
   try {
     const body = await request.json();
-    const { name, email, subject, message } = body as Partial<ContactFormData>;
 
     // Validate required fields
     const requiredFields: (keyof ContactFormData)[] = ['name', 'email', 'subject', 'message'];
@@ -36,22 +34,12 @@ export async function POST(request: NextRequest): Promise<NextResponse<SuccessRe
       );
     }
 
-    // Log submission to console for debugging
-    console.log('Contact form submission received:', {
-      name,
-      email,
-      subject,
-      message,
-      timestamp: new Date().toISOString(),
-    });
-
     // TODO: Future integration - send email via email service (SendGrid, AWS SES, etc.)
-    // For now, this is a placeholder that logs to console
+    // For now, this placeholder confirms receipt without logging or echoing PII.
 
     return NextResponse.json(
       {
         message: 'Contact form submitted successfully',
-        data: { name, email, subject, message } as ContactFormData,
       },
       { status: 200 }
     );

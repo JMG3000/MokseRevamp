@@ -46,7 +46,7 @@ export default function Terms() {
             <p>
               You agree not to use our website for any unlawful purpose or in any
               way that could damage, disable, overburden, or impair our servers or
-              networks. You also agree not to interfere with any other party's use
+              networks. You also agree not to interfere with any other party&apos;s use
               and enjoyment of our website.
             </p>
             <h2>4. Limitation of Liability</h2>

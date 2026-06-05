@@ -35,7 +35,7 @@ export default function ContactForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submitToasterId = "contact-form-submission";
-  const [toastMessage, setToastMessage] = useState({
+  const toastMessage = {
     error: () => "",
     loading: () =>
       toaster.loading({
@@ -61,7 +61,15 @@ export default function ContactForm() {
         type: "info",
         closable: true,
       }),
-  });
+    updateError: (message: string) =>
+      toaster.update(submitToasterId, {
+        title: "Submission failed",
+        description: message,
+        type: "error",
+        duration: 5000,
+        closable: true,
+      }),
+  };
   const [status, setStatus] = useState<SubmissionStatus>({
     type: null,
     message: "",
@@ -69,9 +77,11 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isSubmitting || toaster.isVisible(submitToasterId)) return;
+
     setIsSubmitting(true);
     setStatus({ type: null, message: "" });
-    if (toaster.isVisible(submitToasterId)) return toastMessage.loading();
+    toastMessage.loading();
 
     try {
       const response = await fetch("/api/contact", {
@@ -95,22 +105,24 @@ export default function ContactForm() {
           subject: "",
           message: "",
         });
+        toastMessage.updateSuccess();
       } else {
+        const message = data.error || "Something went wrong. Please try again.";
         setStatus({
           type: "error",
-          message: data.error || "Something went wrong. Please try again.",
+          message,
         });
+        toastMessage.updateError(message);
       }
     } catch {
+      const message = "Failed to send message. Please try again later.";
       setStatus({
         type: "error",
-        message: "Failed to send message. Please try again later.",
+        message,
       });
+      toastMessage.updateError(message);
     } finally {
       setIsSubmitting(false);
-      setTimeout(() => {
-        toastMessage.updateSuccess();
-      }, 3000);
     }
   };
 

@@ -13,8 +13,5 @@ services:
       - ${DEV_MOUNT:-.:/app}
       # - ${DEV_NODEMODULES_MOUNT:-/app/node_modules} # this is thought to be handled in Dockerfile now
     command: ${APP_CMD:-npm run dev}
-    depends_on:
-      mongo:
-        condition: service_healthy
     profiles:
       - ${COMPOSE_PROFILES:-dev}

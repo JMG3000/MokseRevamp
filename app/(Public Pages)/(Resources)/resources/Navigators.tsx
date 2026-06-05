@@ -21,6 +21,22 @@ import { Icon } from "@/components/ui/icons/icon";
 import { resourceCollectionRegistry } from "./mockResourceRegistry";
 import { useEffect, useState } from "react";
 
+type ResourceItem = {
+  id: number | string;
+  title: string;
+  description: string;
+  region: string[];
+  category: string[];
+  WebLogoURL: string | null;
+  url: string;
+  verificationDate?: string;
+};
+
+type CollectionItem = {
+  label: string;
+  value: string;
+};
+
 export default function Navigators() {
   const { contains } = useFilter({ sensitivity: "base" });
 
@@ -31,13 +47,15 @@ export default function Navigators() {
   });
 
   // Data States
-  const [allResources, setAllResources] = useState<any[]>(AllResources);
-  const [filteredItems, setFilteredItems] = useState(AllResources);
+  const [allResources, setAllResources] = useState<ResourceItem[]>(AllResources);
+  const [filteredItems, setFilteredItems] = useState<ResourceItem[]>(AllResources);
+  const [isLoadingResources, setIsLoadingResources] = useState(false);
+  const [resourceError, setResourceError] = useState<string | null>(null);
 
   // Dynamic Dropdown States
-  const [dynamicRegions, setDynamicRegions] = useState(resourceCollectionRegistry.Regions.items);
-  const [dynamicCategories, setDynamicCategories] = useState(resourceCollectionRegistry.Categories.items);
-  const [dynamicTitles, setDynamicTitles] = useState(resourceCollectionRegistry.Titles.items);
+  const [dynamicRegions, setDynamicRegions] = useState<CollectionItem[]>(resourceCollectionRegistry.Regions.items);
+  const [dynamicCategories, setDynamicCategories] = useState<CollectionItem[]>(resourceCollectionRegistry.Categories.items);
+  const [dynamicTitles, setDynamicTitles] = useState<CollectionItem[]>(resourceCollectionRegistry.Titles.items);
 
   // Chakra UI Collections (bound to dynamic state)
   const { collection: regionDropDown, filter: filterRegions } = useListCollection({
@@ -62,24 +80,28 @@ export default function Navigators() {
   const [categoryInput, setCategoryInput] = useState("");
   const [titleInput, setTitleInput] = useState("");
 
-  // --- SILENT BACKGROUND FETCH TO UPGRADE DATA ---
   useEffect(() => {
     const fetchResources = async () => {
+      setIsLoadingResources(true);
+      setResourceError(null);
+
       try {
-        const res = await fetch("/api/notion/database", { method: "POST" });
+        const res = await fetch("/api/notion/database");
         if (!res.ok) throw new Error("Failed to fetch Notion data");
         const data = await res.json();
-        const formattedData = data.payload;
+        const formattedData = Array.isArray(data.payload)
+          ? (data.payload as ResourceItem[])
+          : [];
 
-        const uniqueRegions = Array.from(new Set(formattedData.flatMap((item: any) => item.region)))
+        const uniqueRegions = Array.from(new Set(formattedData.flatMap((item) => item.region)))
           .filter(Boolean)
           .map((region) => ({ label: String(region), value: String(region) }));
 
-        const uniqueCategories = Array.from(new Set(formattedData.flatMap((item: any) => item.category)))
+        const uniqueCategories = Array.from(new Set(formattedData.flatMap((item) => item.category)))
           .filter(Boolean)
           .map((cat) => ({ label: String(cat), value: String(cat) }));
 
-        const uniqueTitles = formattedData.map((item: any) => ({
+        const uniqueTitles = formattedData.map((item) => ({
           label: String(item.title), value: String(item.title)
         }));
 
@@ -89,7 +111,10 @@ export default function Navigators() {
         setDynamicCategories(uniqueCategories);
         setDynamicTitles(uniqueTitles);
       } catch (error) {
-        console.error("Notion fetch failed, falling back to mock JSON data:", error);
+        console.error("Notion resource fetch failed", error);
+        setResourceError("Live resource data is temporarily unavailable. Showing saved resources.");
+      } finally {
+        setIsLoadingResources(false);
       }
     };
     fetchResources();
@@ -351,6 +376,11 @@ export default function Navigators() {
           <Box display={{ base: "inline", md: "none" }} ml={2}>Search</Box>
         </Button>
       </Stack>
+      {(isLoadingResources || resourceError) && (
+        <Box role="status" color={resourceError ? "orange.600" : "gray.600"} fontSize="sm">
+          {resourceError ?? "Loading live resource data..."}
+        </Box>
+      )}
       {/* CARD TABLE SECTION */}
       <ScrollArea.Root height={{ base: "lg", md: "xl" }} maxW="full">
         <ScrollArea.Viewport>
@@ -368,7 +398,7 @@ export default function Navigators() {
                 <Center borderRadius="md" minW={{ sm: "120px" }} w={{ base: "100%", sm: "auto" }}>
                   <ClientOnly fallback={<Box boxSize={{ base: "100%", sm: 120 }} bg={"blue.500"} />}>
                     <Image
-                      src={item.WebLogoURL}
+                      src={item.WebLogoURL ?? "/MOKSE-3-180x46.png"}
                       alt={item.title}
                       width={120}
                       height={120}

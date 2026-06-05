@@ -29,7 +29,7 @@ export function HeaderTemplate({
   titleAlignment?: number; // Kept for backwards compatibility if used elsewhere
   titleLocation?: number;
   image?: string;
-  imageHeight?: any;
+  imageHeight?: React.ComponentProps<typeof Box>["h"];
   imageLabel?: string;
   description?: string;
   direction?: "row" | "column";

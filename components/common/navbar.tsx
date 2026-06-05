@@ -28,30 +28,17 @@ export default function Navbar() {
   const deviceSize = useDeviceSize();
   const notMobileDevice = deviceSize !== "base" && deviceSize !== "sm";
 
-  const [isMounted, setIsMounted] = useState(false);
   const [isFixed, setIsFixed] = useState(false);
-
-  // Mount check for screen size check
-  const runMountCheck = () => {
-    if (typeof window !== "undefined") {
-      setIsMounted(true);
-    }
-  }
-  useEffect(() => {
-    runMountCheck();
-  }, []);
 
   // Check device scroll position for navbar position
   useEffect(() => {
-    if (!isMounted) return;
     const handleScroll = () => {
       const scrollPosition = window?.scrollY;
       setIsFixed(scrollPosition >= 50);
     };
-    handleScroll();
     window?.addEventListener("scroll", handleScroll);
     return () => window?.removeEventListener("scroll", handleScroll);
-  }, [isMounted]);
+  }, []);
 
   // Container props
   const ContainerProps = {
@@ -149,9 +136,7 @@ export default function Navbar() {
               <Button
                 bg={
                   isFixed
-                    ? isMounted
-                      ? "teal.focusRing"
-                      : "teal.focusRing"
+                    ? "teal.focusRing"
                     : "transparent"
                 }
                 variant={isFixed ? "solid" : "ghost"}
@@ -159,7 +144,7 @@ export default function Navbar() {
                 size={"xl"}
                 onClick={toggleColorMode}
               >
-                {isMounted && (colorMode === "light" ? <MdMoon /> : <MdSun />)}
+                {colorMode === "light" ? <MdMoon /> : <MdSun />}
               </Button>
             </HStack>
           </HStack>
