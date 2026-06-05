@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import Footer from "@/app/(Admin Dashboard)/components/footer";
 import { Provider } from "@/app/provider";
+import { MeticulousRecorder } from "@/components/tooling/meticulous-recorder";
 import Navbar from "@/app/(Admin Dashboard)/components/navbar";
 import type { Viewport } from 'next';
 
@@ -25,6 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <MeticulousRecorder />
+      </head>
       <body className={`${openSans.variable} antialiased`}>
         <Provider>
           <Navbar />
