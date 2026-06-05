@@ -41,6 +41,7 @@ jobs:
         run: |
           mkdir -p companion-assets/_next
           cp -r .next/static companion-assets/_next/
+          ls -la companion-assets
 
       - name: Start app
         run: |

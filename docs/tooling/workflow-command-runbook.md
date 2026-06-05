@@ -34,6 +34,18 @@ Required repository variable or deployment environment variable:
 NEXT_PUBLIC_METICULOUS_PROJECT_ID
 ```
 
+Verify GitHub repository variables from a machine with GitHub CLI access:
+
+```powershell
+gh variable list --repo JMG3000/MokseRevamp
+```
+
+Set the public Meticulous project ID variable if it is missing:
+
+```powershell
+gh variable set NEXT_PUBLIC_METICULOUS_PROJECT_ID --repo JMG3000/MokseRevamp --body "<meticulous-project-id>"
+```
+
 Confirm the workflow file exists:
 
 ```powershell
@@ -53,6 +65,40 @@ components/tooling/meticulous-recorder.tsx
 app/(Public Pages)/layout.tsx
 app/(Admin Dashboard)/layout.tsx
 ```
+
+## Vercel Project
+
+Current Vercel project:
+
+```text
+Team: jacob-garretts-projects
+Project: mokserevamp
+Project ID: prj_R8mtzD2Qjg2Kzfjh5ti07SWpq9sw
+```
+
+Verify the local checkout is linked to the correct Vercel project:
+
+```powershell
+Get-Content .vercel\project.json
+npx vercel@latest project ls --scope jacob-garretts-projects
+```
+
+List Vercel runtime environment variables:
+
+```powershell
+npx vercel@latest env ls --scope jacob-garretts-projects
+```
+
+Add runtime variables only after their values are confirmed:
+
+```powershell
+npx vercel@latest env add NOTION_TOKEN production preview development --scope jacob-garretts-projects
+npx vercel@latest env add NOTION_DATABASE_KEY production preview development --scope jacob-garretts-projects
+npx vercel@latest env add NOTION_BASE_URL production preview development --scope jacob-garretts-projects
+npx vercel@latest env add NEXT_PUBLIC_METICULOUS_PROJECT_ID production preview development --scope jacob-garretts-projects
+```
+
+Do not commit `.vercel/`; it is local metadata and is ignored by Git.
 
 ## CodeRabbit CLI Through WSL
 
