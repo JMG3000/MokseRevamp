@@ -34,6 +34,12 @@ Required repository variable or deployment environment variable:
 NEXT_PUBLIC_METICULOUS_PROJECT_ID
 ```
 
+Expected value format:
+
+```text
+The raw Meticulous project ID only. Do not paste workflow YAML, script tags, or command snippets into this variable.
+```
+
 Verify GitHub repository variables from a machine with GitHub CLI access:
 
 ```powershell
@@ -44,6 +50,12 @@ Set the public Meticulous project ID variable if it is missing:
 
 ```powershell
 gh variable set NEXT_PUBLIC_METICULOUS_PROJECT_ID --repo JMG3000/MokseRevamp --body "<meticulous-project-id>"
+```
+
+If the Meticulous workflow fails with `Could not retrieve project data`, rotate or replace the GitHub Actions secret:
+
+```powershell
+gh secret set METICULOUS_API_TOKEN --repo JMG3000/MokseRevamp
 ```
 
 Confirm the workflow file exists:

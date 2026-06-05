@@ -8,7 +8,7 @@ Track which services are connected to the new MokseRevamp repository and which a
 
 | Service | Status | Required action |
 | --- | --- | --- |
-| GitHub | Connected | Private repo `JMG3000/MokseRevamp` exists, `main` is pushed, and PR #1/#2 exist. Verify repository variable `NEXT_PUBLIC_METICULOUS_PROJECT_ID` through GitHub Actions Variables once `gh` CLI or dashboard access is available. |
+| GitHub | Connected, variable fix needed | Private repo `JMG3000/MokseRevamp` exists, `main` is pushed, and PR #1/#2 exist. GitHub Actions run #27046225955 shows `NEXT_PUBLIC_METICULOUS_PROJECT_ID` is currently set to a pasted YAML workflow snippet instead of the Meticulous project ID. |
 | Vercel | Connected, env pending | Created Vercel project `mokserevamp` under `jacob-garretts-projects`; local checkout linked to `prj_R8mtzD2Qjg2Kzfjh5ti07SWpq9sw`. Add runtime env vars after values are confirmed. |
 | CodeRabbit | Connected via CLI | WSL CodeRabbit CLI is authenticated and has reviewed the PR branch. Vercel Marketplace subscription onboarding remains stuck outside the repo workflow. |
 | GitHub security | Pending | Enable CodeQL, Dependabot, dependency review, and secret scanning where available. |
@@ -45,4 +45,23 @@ Required Vercel env vars still to add after values are confirmed:
 - `NOTION_BASE_URL`
 - `NEXT_PUBLIC_METICULOUS_PROJECT_ID`
 - Sentry DSN/env vars after the new Sentry project exists.
+
+## Meticulous CI Finding
+
+GitHub Actions run `27046225955` on PR #1 completed the build, companion-assets copy, and app startup steps successfully. The Meticulous action failed with:
+
+```text
+Could not retrieve project data. Is the API token correct?
+```
+
+Observed blockers:
+
+- `NEXT_PUBLIC_METICULOUS_PROJECT_ID` is populated but malformed; the workflow log shows it contains a pasted YAML snippet, not a Meticulous project ID.
+- `METICULOUS_API_TOKEN` may be missing, revoked, or the wrong token type for the Meticulous cloud-compute action.
+
+Required dashboard fixes:
+
+- Replace GitHub Actions variable `NEXT_PUBLIC_METICULOUS_PROJECT_ID` with the actual Meticulous project ID only.
+- Confirm GitHub Actions secret `METICULOUS_API_TOKEN` is the Meticulous API token expected by `alwaysmeticulous/report-diffs-action/cloud-compute@v1`.
+- Add `NEXT_PUBLIC_METICULOUS_PROJECT_ID` to Vercel after the value is confirmed.
 
