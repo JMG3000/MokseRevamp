@@ -36,6 +36,7 @@ jobs:
         env:
           NODE_ENV: production
           NEXT_PUBLIC_METICULOUS_DETERMINISTIC: "1"
+          NEXT_PUBLIC_METICULOUS_PROJECT_ID: ${{ vars.NEXT_PUBLIC_METICULOUS_PROJECT_ID }}
           NEXT_PUBLIC_METICULOUS_SIMULATED_DATE: "Fri, 17 May 2024 13:35:20 GMT"
 
       - name: Prepare companion assets
@@ -60,6 +61,7 @@ jobs:
           PORT: 3000
           NODE_ENV: production
           NEXT_PUBLIC_METICULOUS_DETERMINISTIC: "1"
+          NEXT_PUBLIC_METICULOUS_PROJECT_ID: ${{ vars.NEXT_PUBLIC_METICULOUS_PROJECT_ID }}
           NEXT_PUBLIC_METICULOUS_SIMULATED_DATE: "Fri, 17 May 2024 13:35:20 GMT"
 
       - name: Run Meticulous tests

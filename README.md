@@ -54,9 +54,10 @@ Required GitHub configuration:
 
 ```text
 Secret: METICULOUS_API_TOKEN
+Variable: NEXT_PUBLIC_METICULOUS_PROJECT_ID
 ```
 
-The session recorder script uses the configured Meticulous recording token and renders only for local development and Vercel preview deployments. It does not render in Vercel production.
+The session recorder script uses `NEXT_PUBLIC_METICULOUS_PROJECT_ID` for the Meticulous recording token and keeps the current recorder token as a fallback. It renders only for local development and Vercel preview deployments. It does not render in Vercel production.
 
 The Stop The Stigma countdown has deterministic rendering support for Meticulous runs. The GitHub Actions workflow also copies `.next/static` into `companion-assets/_next/static` for Meticulous cloud-compute.
 
@@ -116,6 +117,7 @@ http://localhost:3000
 - Enable Vercel Web Analytics for `mokserevamp`
 - Connect CircleCI to `JMG3000/MokseRevamp`
 - Keep `METICULOUS_API_TOKEN` in GitHub Actions secrets only
+- Keep `NEXT_PUBLIC_METICULOUS_PROJECT_ID` configured in GitHub repo variables and Vercel preview/development env vars for the recorder script
 - Enable GitHub code scanning / Advanced Security for CodeQL uploads and hard-gated dependency review
 - Keep local secret notes in ignored files only
 - Replace the disabled admin placeholder with production auth before launch

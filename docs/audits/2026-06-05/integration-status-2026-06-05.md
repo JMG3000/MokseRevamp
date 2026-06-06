@@ -45,6 +45,7 @@ Required Vercel env vars still to add after values are confirmed:
 - `NOTION_TOKEN`
 - `NOTION_DATABASE_KEY`
 - `NOTION_BASE_URL`
+- `NEXT_PUBLIC_METICULOUS_PROJECT_ID` for preview/development recorder activation
 - Sentry DSN/env vars after the new Sentry project exists.
 
 ## Meticulous CI Finding
@@ -65,7 +66,7 @@ Required dashboard fixes:
 
 Recorder status:
 
-- The browser recorder script uses the Meticulous recording token provided on 2026-06-05.
+- The browser recorder script uses `NEXT_PUBLIC_METICULOUS_PROJECT_ID` when configured and falls back to the Meticulous recording token provided on 2026-06-05.
 - It renders only in local development and Vercel preview, with `data-is-production-environment="false"`.
 - It does not render on the Vercel production deployment from `main`.
 

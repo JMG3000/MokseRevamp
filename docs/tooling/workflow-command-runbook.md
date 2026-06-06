@@ -28,6 +28,14 @@ GitHub Actions secret, already added by repo owner:
 METICULOUS_API_TOKEN
 ```
 
+GitHub Actions repository variable and Vercel preview/development env var:
+
+```text
+NEXT_PUBLIC_METICULOUS_PROJECT_ID
+```
+
+In this repo, `NEXT_PUBLIC_METICULOUS_PROJECT_ID` feeds the Meticulous recorder token used by the native `<script>` tag. The recorder also has a fallback token in code so the setup does not silently disappear while dashboard wiring is being verified.
+
 If the Meticulous workflow fails with `Could not retrieve project data` or ``projectId` is required when authenticating with an OAuth user token`, replace the GitHub Actions secret with the project-specific API token from the Meticulous project settings:
 
 ```powershell
@@ -36,7 +44,7 @@ gh secret set METICULOUS_API_TOKEN --repo JMG3000/MokseRevamp
 
 Do not use a personal/OAuth Meticulous user token for `METICULOUS_API_TOKEN` unless Meticulous support confirms the matching `projects-yaml` setup for this action.
 
-The browser recorder script uses the Meticulous recording token and only renders in local development or Vercel preview deployments. It is intentionally not tied to a `NEXT_PUBLIC_` variable and should not render in production.
+The browser recorder script uses the Meticulous recording token and only renders in local development or Vercel preview deployments. It should not render in production.
 
 Confirm the workflow file exists:
 
@@ -87,6 +95,7 @@ Add runtime variables only after their values are confirmed:
 npx vercel@latest env add NOTION_TOKEN production preview development --scope jacob-garretts-projects
 npx vercel@latest env add NOTION_DATABASE_KEY production preview development --scope jacob-garretts-projects
 npx vercel@latest env add NOTION_BASE_URL production preview development --scope jacob-garretts-projects
+npx vercel@latest env add NEXT_PUBLIC_METICULOUS_PROJECT_ID preview development --scope jacob-garretts-projects
 ```
 
 Do not commit `.vercel/`; it is local metadata and is ignored by Git.
