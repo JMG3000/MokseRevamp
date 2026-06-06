@@ -52,11 +52,13 @@ Set the public Meticulous project ID variable if it is missing:
 gh variable set NEXT_PUBLIC_METICULOUS_PROJECT_ID --repo JMG3000/MokseRevamp --body "<meticulous-project-id>"
 ```
 
-If the Meticulous workflow fails with `Could not retrieve project data`, rotate or replace the GitHub Actions secret:
+If the Meticulous workflow fails with `Could not retrieve project data` or ``projectId` is required when authenticating with an OAuth user token`, replace the GitHub Actions secret with the project-specific API token from the Meticulous project settings:
 
 ```powershell
 gh secret set METICULOUS_API_TOKEN --repo JMG3000/MokseRevamp
 ```
+
+Do not use a personal/OAuth Meticulous user token for `METICULOUS_API_TOKEN` unless Meticulous support confirms the matching `projects-yaml` setup for this action.
 
 Confirm the workflow file exists:
 

@@ -59,7 +59,7 @@ Could not retrieve project data. Is the API token correct?
 Observed blockers:
 
 - `NEXT_PUBLIC_METICULOUS_PROJECT_ID` is populated but malformed; the workflow log shows it contains a pasted YAML snippet, not a Meticulous project ID.
-- `METICULOUS_API_TOKEN` may be missing, revoked, or the wrong token type for the Meticulous cloud-compute action.
+- `METICULOUS_API_TOKEN` is being accepted as a token value, but latest run `27048742822` reports it behaves like an OAuth user token and requires a project ID. The cloud-compute action metadata does not expose a `project-id` input, so this should be replaced with the project-specific API token from the Meticulous project settings.
 
 Required dashboard fixes:
 
@@ -74,4 +74,5 @@ Required dashboard fixes:
 - Deterministic rendering is implemented for the Stop The Stigma countdown route through `lib/meticulous.ts` and a frozen countdown mode during Meticulous tests.
 - CircleCI config is present and YAML syntax was validated with `npx --yes yaml-lint .circleci/config.yml`.
 - `npm audit fix` reduced audit findings from 3 moderate to 2 moderate. The remaining advisory is `postcss <8.5.10` through Next; npm only offers `npm audit fix --force`, which would make a breaking downgrade and was not run.
+- Latest GitHub Actions status for commit `b9ac936`: `Next.js CI` passed, `CodeQL Advanced` was still running, and `Meticulous Tests` failed only at the Meticulous action step with the token/project configuration issue above.
 
