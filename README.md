@@ -26,7 +26,7 @@ public/                      Static assets
 docs/audits/                 Dated audit outputs
 docs/tooling/                Tooling setup and workflow runbooks
 .github/workflows/           CI, CodeQL, and Meticulous workflows
-.circleci/config.yml         CircleCI verification workflow
+.circleci/config.yml         CircleCI verification and production deploy-marker workflow
 ```
 
 ## Notion Dependency
@@ -66,7 +66,9 @@ Vercel Web Analytics is installed with `@vercel/analytics` and mounted in both A
 
 ## CircleCI
 
-CircleCI repo configuration lives at `.circleci/config.yml`. It runs install, typecheck, lint, build, and companion-assets preparation on `dev-test` and `main`. Connect the CircleCI dashboard to `JMG3000/MokseRevamp` to activate the workflow.
+CircleCI repo configuration lives at `.circleci/config.yml`. It runs install, typecheck, lint, build, and companion-assets preparation on `dev-test` and `main`.
+
+On `main`, CircleCI also runs `deploy-production-marker` after verification. This job records a CircleCI Deploys marker for the Vercel production handoff; Vercel still performs the actual production deployment from the `main` branch.
 
 ## Branch And Deployment Model
 
@@ -75,7 +77,7 @@ dev-test  Development validation branch
 main      Vercel production branch
 ```
 
-Push development changes to `dev-test`. The `Promote dev-test to main` GitHub Actions workflow verifies typecheck, lint, build, high-severity npm audit, companion assets, and Meticulous before pushing the verified commit to `main`. Vercel production should stay connected to `main`.
+Push all development changes to `dev-test`. The `Promote dev-test to main` GitHub Actions workflow verifies typecheck, lint, build, high-severity npm audit, companion assets, and Meticulous before pushing the verified commit to `main`. Vercel production should stay connected to `main`.
 
 ## CodeRabbit
 
@@ -87,6 +89,8 @@ wsl.exe bash -lc "cd /mnt/d/repos/codex-projects/MokseRevamp && cr review --agen
 ```
 
 CodeRabbit reviews send repository diff/code content to CodeRabbit. Only run reviews when that data sharing is intended.
+
+The `codex/production-hardening-coderabbit` branch was used for the earlier production-hardening and CodeRabbit review setup. Its commits are already contained in `dev-test` and `main`, so active development should continue from `dev-test`.
 
 ## Local Development
 

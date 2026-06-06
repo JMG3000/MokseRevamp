@@ -12,7 +12,7 @@ Track which services are connected to the new MokseRevamp repository and which a
 | Vercel | Connected, env pending | Created Vercel project `mokserevamp` under `jacob-garretts-projects`; local checkout linked to `prj_R8mtzD2Qjg2Kzfjh5ti07SWpq9sw`. Add runtime env vars after values are confirmed. |
 | Vercel Web Analytics | Code integrated | Added `@vercel/analytics` and mounted `<Analytics />` in both App Router route-group layouts. Confirm Web Analytics is enabled for the Vercel project dashboard before production launch. |
 | CodeRabbit | Connected via CLI | WSL CodeRabbit CLI is authenticated and has reviewed the PR branch. Vercel Marketplace subscription onboarding remains stuck outside the repo workflow. |
-| CircleCI | Repo config added | Added `.circleci/config.yml` with install, typecheck, lint, build, companion-assets copy, artifact storage, and branch filters for `dev-test` and `main`. Connect the CircleCI project to `JMG3000/MokseRevamp` in the CircleCI dashboard to run it. |
+| CircleCI | Repo config added | Added `.circleci/config.yml` with install, typecheck, lint, build, companion-assets copy, artifact storage, branch filters for `dev-test` and `main`, and a `main`-only deploy marker job for the Vercel production handoff. Connect the CircleCI project to `JMG3000/MokseRevamp` in the CircleCI dashboard to run it. |
 | GitHub security | Repo workflows added, dashboard pending | CodeQL, Dependabot, dependency review, npm audit, and static secret-pattern scanning workflows are committed. Dependency review is informational until GitHub Dependency Graph / Advanced Security is enabled. Enable GitHub code scanning / Advanced Security and secret scanning push protection where available. |
 | Sentry | Pending | Create a new Sentry project/environment and add DSN through Vercel. |
 | Linear | Connected | Issue `JAK-5` tracks MokseRevamp workflow integration and audit documentation. Continue logging PR links, command results, blockers, and next actions there. |
@@ -85,4 +85,13 @@ Recorder status:
 - `.github/workflows/promote-dev-test.yml` verifies `dev-test` with typecheck, lint, build, npm audit high-severity gate, companion-assets setup, and Meticulous cloud-compute tests before pushing the checked commit to `main`.
 - `.github/workflows/security.yml` adds dependency review, npm audit high-severity gating, and static secret-pattern scanning.
 - `.github/dependabot.yml` targets dependency updates at `dev-test` so updates are validated before promotion to `main`.
+
+## 2026-06-06 CircleCI Deploy Marker Update
+
+- CircleCI reported: `Deploy markers generation failed: no deployment jobs found in configuration`.
+- Cause: the repo had only a `verify` job, while CircleCI Deploys expects a deployment job before deploy marker generation succeeds.
+- Added `deploy-production-marker`, filtered to `main` only and dependent on `verify`.
+- The job records `vercel-production` deployment status in CircleCI Deploys, but Vercel remains the actual production deployer for `main`.
+- Active development pushes remain scoped to `dev-test`.
+- The historical `codex/production-hardening-coderabbit` branch was used for CodeRabbit hardening setup; its commits are already included in `dev-test` and `main`.
 

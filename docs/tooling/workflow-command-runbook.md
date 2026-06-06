@@ -127,7 +127,7 @@ Local syntax validation:
 npx --yes yaml-lint .circleci\config.yml
 ```
 
-Expected CircleCI job path on `dev-test` and `main`:
+Expected CircleCI verification job path on `dev-test` and `main`:
 
 ```text
 npm ci
@@ -137,6 +137,19 @@ npm run build
 copy .next/static into companion-assets/_next/static
 store companion-assets as build artifacts
 ```
+
+Expected CircleCI deploy marker path on `main` only:
+
+```text
+verify
+deploy-production-marker
+circleci run release plan vercel-production
+circleci run release update vercel-production --status=running
+record Vercel deployment handoff
+circleci run release update vercel-production --status=SUCCESS or FAILED
+```
+
+The deploy marker job exists because CircleCI Deploys requires a deployment job before deploy marker generation can succeed. It does not deploy the app; Vercel remains the production deployer for the `main` branch.
 
 Dashboard action still required:
 
@@ -149,7 +162,7 @@ Connect CircleCI to GitHub repo JMG3000/MokseRevamp.
 Branch roles:
 
 ```text
-dev-test  Development validation branch; CircleCI, GitHub Actions, Meticulous, and security checks run here.
+dev-test  Development validation branch; all active development pushes go here.
 main      Production branch; Vercel should use this branch for production deployments.
 ```
 
@@ -166,6 +179,14 @@ git -C D:\repos\codex-projects\MokseRevamp push origin HEAD:main
 ```
 
 The GitHub Actions workflow `.github/workflows/promote-dev-test.yml` also verifies `dev-test` and pushes the exact checked commit to `main` when its configured checks pass. Keep `main` configured as the Vercel production branch.
+
+Historical branch note:
+
+```text
+codex/production-hardening-coderabbit
+```
+
+This branch was used for the earlier production-hardening and CodeRabbit onboarding/review work. Its commits are already contained by `dev-test` and `main`, so it is no longer the active development branch.
 
 ## GitHub Security Workflows
 

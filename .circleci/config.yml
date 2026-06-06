@@ -42,6 +42,38 @@ jobs:
           path: companion-assets
           destination: companion-assets
 
+  deploy-production-marker:
+    docker:
+      - image: cimg/base:stable
+    resource_class: small
+    steps:
+      - run:
+          name: Plan Vercel production deployment marker
+          command: |
+            circleci run release plan vercel-production \
+              --environment-name=production \
+              --component-name=mokserevamp \
+              --target-version="${CIRCLE_SHA1:0:7}"
+      - run:
+          name: Mark Vercel production deployment as running
+          command: circleci run release update vercel-production --status=running
+      - run:
+          name: Record Vercel deployment handoff
+          command: |
+            echo "Production deployment is handled by Vercel from the main branch."
+            echo "CircleCI records this marker after verify passes on main."
+      - run:
+          name: Mark Vercel production deployment as successful
+          command: circleci run release update vercel-production --status=SUCCESS
+          when: on_success
+      - run:
+          name: Mark Vercel production deployment as failed
+          command: |
+            circleci run release update vercel-production \
+              --status=FAILED \
+              --failure-reason="CircleCI production deployment marker job failed."
+          when: on_fail
+
 workflows:
   verify:
     jobs:
@@ -50,4 +82,11 @@ workflows:
             branches:
               only:
                 - dev-test
+                - main
+      - deploy-production-marker:
+          requires:
+            - verify
+          filters:
+            branches:
+              only:
                 - main
