@@ -10,7 +10,9 @@ Track which services are connected to the new MokseRevamp repository and which a
 | --- | --- | --- |
 | GitHub | Connected, variable fix needed | Private repo `JMG3000/MokseRevamp` exists, `main` is pushed, and PR #1/#2 exist. GitHub Actions run #27046225955 shows `NEXT_PUBLIC_METICULOUS_PROJECT_ID` is currently set to a pasted YAML workflow snippet instead of the Meticulous project ID. |
 | Vercel | Connected, env pending | Created Vercel project `mokserevamp` under `jacob-garretts-projects`; local checkout linked to `prj_R8mtzD2Qjg2Kzfjh5ti07SWpq9sw`. Add runtime env vars after values are confirmed. |
+| Vercel Web Analytics | Code integrated | Added `@vercel/analytics` and mounted `<Analytics />` in both App Router route-group layouts. Confirm Web Analytics is enabled for the Vercel project dashboard before production launch. |
 | CodeRabbit | Connected via CLI | WSL CodeRabbit CLI is authenticated and has reviewed the PR branch. Vercel Marketplace subscription onboarding remains stuck outside the repo workflow. |
+| CircleCI | Repo config added | Added `.circleci/config.yml` with install, typecheck, lint, build, companion-assets copy, and artifact storage. Connect the CircleCI project to `JMG3000/MokseRevamp` in the CircleCI dashboard to run it. |
 | GitHub security | Pending | Enable CodeQL, Dependabot, dependency review, and secret scanning where available. |
 | Sentry | Pending | Create a new Sentry project/environment and add DSN through Vercel. |
 | Linear | Connected | Issue `JAK-5` tracks MokseRevamp workflow integration and audit documentation. Continue logging PR links, command results, blockers, and next actions there. |
@@ -64,4 +66,12 @@ Required dashboard fixes:
 - Replace GitHub Actions variable `NEXT_PUBLIC_METICULOUS_PROJECT_ID` with the actual Meticulous project ID only.
 - Confirm GitHub Actions secret `METICULOUS_API_TOKEN` is the Meticulous API token expected by `alwaysmeticulous/report-diffs-action/cloud-compute@v1`.
 - Add `NEXT_PUBLIC_METICULOUS_PROJECT_ID` to Vercel after the value is confirmed.
+
+## 2026-06-05 Workflow Update
+
+- Vercel Web Analytics package is installed and `<Analytics />` is mounted in both route-group layouts.
+- Meticulous companion-assets setup now verifies `companion-assets/_next/static` in GitHub Actions.
+- Deterministic rendering is implemented for the Stop The Stigma countdown route through `lib/meticulous.ts` and a frozen countdown mode during Meticulous tests.
+- CircleCI config is present and YAML syntax was validated with `npx --yes yaml-lint .circleci/config.yml`.
+- `npm audit fix` reduced audit findings from 3 moderate to 2 moderate. The remaining advisory is `postcss <8.5.10` through Next; npm only offers `npm audit fix --force`, which would make a breaking downgrade and was not run.
 

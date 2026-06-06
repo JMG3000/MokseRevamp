@@ -9,8 +9,8 @@ MokseRevamp is the clean production-prep repository for the Mokse website. It wa
 - **UI:** React 19, Chakra UI 3, custom shared UI components
 - **Primary backend dependency:** Notion API for live resource data
 - **Deployment target:** Vercel
-- **Workflow tooling:** GitHub Actions, CodeQL, Dependabot, CodeRabbit CLI, Meticulous, Linear (`JAK-5`)
-- **Observability/testing in progress:** Meticulous visual/session regression workflow; Sentry still pending
+- **Workflow tooling:** GitHub Actions, CircleCI, CodeQL, Dependabot, CodeRabbit CLI, Meticulous, Linear (`JAK-5`)
+- **Observability/testing in progress:** Vercel Web Analytics, Meticulous visual/session regression workflow; Sentry still pending
 
 ## Important Directories
 
@@ -26,6 +26,7 @@ public/                      Static assets
 docs/audits/                 Dated audit outputs
 docs/tooling/                Tooling setup and workflow runbooks
 .github/workflows/           CI, CodeQL, and Meticulous workflows
+.circleci/config.yml         CircleCI verification workflow
 ```
 
 ## Notion Dependency
@@ -57,6 +58,16 @@ Repository variable or deployment env var: NEXT_PUBLIC_METICULOUS_PROJECT_ID
 ```
 
 The recorder script renders only when `NEXT_PUBLIC_METICULOUS_PROJECT_ID` is set.
+
+The Stop The Stigma countdown has deterministic rendering support for Meticulous runs. The GitHub Actions workflow also copies `.next/static` into `companion-assets/_next/static` for Meticulous cloud-compute.
+
+## Observability
+
+Vercel Web Analytics is installed with `@vercel/analytics` and mounted in both App Router route-group layouts. Enable Web Analytics for the `mokserevamp` Vercel project before launch.
+
+## CircleCI
+
+CircleCI repo configuration lives at `.circleci/config.yml`. It runs install, typecheck, lint, build, and companion-assets preparation. Connect the CircleCI dashboard to `JMG3000/MokseRevamp` to activate the workflow.
 
 ## CodeRabbit
 
@@ -90,6 +101,8 @@ http://localhost:3000
 
 - Connect Vercel to `JMG3000/MokseRevamp`
 - Configure Vercel Notion env vars
+- Enable Vercel Web Analytics for `mokserevamp`
+- Connect CircleCI to `JMG3000/MokseRevamp`
 - Configure `NEXT_PUBLIC_METICULOUS_PROJECT_ID`
 - Keep `METICULOUS_API_TOKEN` in GitHub Actions secrets only
 - Keep local secret notes in ignored files only

@@ -19,7 +19,7 @@ import {
     Link as ChakraLink,
 } from "@chakra-ui/react";
 import NavigatorsNetwork from "./navigators-network/page";
-import StopTheStigma from "./stop-the-stigma/page";
+import StopTheStigmaContent from "./stop-the-stigma/stop-the-stigma-content";
 import NextImage from "next/image";
 import NextLink from "next/link";
 import { Icon } from "@/components/ui/icons/icon";
@@ -53,6 +53,10 @@ const programs: ProgramCard[] = [
         tags: ["Platform", "Partnerships"],
     },
 ];
+
+const PROGRAM_TAB_INITIAL_NOW_MS = Date.parse("Fri, 17 May 2024 13:35:20 GMT");
+const isMeticulousDeterministicBuild =
+    process.env.NEXT_PUBLIC_METICULOUS_DETERMINISTIC === "1";
 
 export default function Programs() {
     return (
@@ -165,7 +169,10 @@ export default function Programs() {
                         </Tabs.Content>
 
                         <Tabs.Content value="Stop-The-Stigma" p={0}>
-                            <StopTheStigma />
+                            <StopTheStigmaContent
+                                freezeCountdown={isMeticulousDeterministicBuild}
+                                initialNowMs={PROGRAM_TAB_INITIAL_NOW_MS}
+                            />
                         </Tabs.Content>
 
                         <Tabs.Content value="Navigators-Network" p={0}>

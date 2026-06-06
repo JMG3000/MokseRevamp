@@ -112,6 +112,59 @@ npx vercel@latest env add NEXT_PUBLIC_METICULOUS_PROJECT_ID production preview d
 
 Do not commit `.vercel/`; it is local metadata and is ignored by Git.
 
+## Vercel Web Analytics
+
+Package and layout integration:
+
+```text
+@vercel/analytics
+app/(Public Pages)/layout.tsx
+app/(Admin Dashboard)/layout.tsx
+```
+
+The app mounts:
+
+```tsx
+<Analytics />
+```
+
+Dashboard action still required:
+
+```text
+Enable Web Analytics for project `mokserevamp` in Vercel.
+```
+
+## CircleCI
+
+Repo config:
+
+```text
+.circleci/config.yml
+```
+
+Local syntax validation:
+
+```powershell
+npx --yes yaml-lint .circleci\config.yml
+```
+
+Expected CircleCI job path:
+
+```text
+npm ci
+npm run typecheck
+npm run lint
+npm run build
+copy .next/static into companion-assets/_next/static
+store companion-assets as build artifacts
+```
+
+Dashboard action still required:
+
+```text
+Connect CircleCI to GitHub repo JMG3000/MokseRevamp.
+```
+
 ## CodeRabbit CLI Through WSL
 
 Check authentication:

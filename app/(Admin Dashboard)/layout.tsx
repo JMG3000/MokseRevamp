@@ -3,6 +3,7 @@ import { Open_Sans } from "next/font/google";
 import Footer from "@/app/(Admin Dashboard)/components/footer";
 import { Provider } from "@/app/provider";
 import { MeticulousRecorder } from "@/components/tooling/meticulous-recorder";
+import { Analytics } from "@vercel/analytics/next";
 import Navbar from "@/app/(Admin Dashboard)/components/navbar";
 import type { Viewport } from 'next';
 
@@ -35,6 +36,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </Provider>
+        <Analytics />
       </body>
     </html>
   );
