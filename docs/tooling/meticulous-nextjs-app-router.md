@@ -20,7 +20,7 @@ Because this repo currently uses route-group layouts instead of one root `app/la
 - GitHub Actions repository variable or Vercel preview/development env var: `NEXT_PUBLIC_METICULOUS_PROJECT_ID`
 - Browser recorder fallback token: stored in `components/tooling/meticulous-recorder.tsx` per the Meticulous recorder-script setup already provided for this repository.
 
-`NEXT_PUBLIC_METICULOUS_PROJECT_ID` feeds the native recorder script token. The recorder script only renders in local development or Vercel preview deployments:
+`NEXT_PUBLIC_METICULOUS_PROJECT_ID` feeds the native recorder script token/project attribute. The recorder script only renders in local development or Vercel preview deployments:
 
 - `process.env.NODE_ENV === "development"`
 - `process.env.VERCEL_ENV === "preview"`

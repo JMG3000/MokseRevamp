@@ -16,6 +16,7 @@ export function MeticulousRecorder() {
 
   return (
     <script
+      data-project-id={recordingToken}
       data-recording-token={recordingToken}
       data-is-production-environment="false"
       src="https://snippet.meticulous.ai/v1/meticulous.js"
