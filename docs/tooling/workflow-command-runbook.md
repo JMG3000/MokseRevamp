@@ -42,7 +42,7 @@ If the Meticulous workflow fails with `Could not retrieve project data` or ``pro
 gh secret set METICULOUS_API_TOKEN --repo JMG3000/MokseRevamp
 ```
 
-Do not use a personal/OAuth Meticulous user token for `METICULOUS_API_TOKEN` unless Meticulous support confirms the matching `projects-yaml` setup for this action.
+The Meticulous GitHub Actions workflows use `projects-yaml` so the configured project key, API token, and app URL travel together. If CI still reports ``projectId` is required when authenticating with an OAuth user token`, replace `METICULOUS_API_TOKEN` with the project-specific API token from Meticulous project settings.
 
 The browser recorder script uses the Meticulous recording token and only renders in local development or Vercel preview deployments. It should not render in production.
 

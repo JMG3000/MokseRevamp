@@ -62,6 +62,10 @@ The GitHub Actions workflow copies static Next.js assets after `npm run build` s
 The Meticulous action is configured with:
 
 ```yaml
+projects-yaml: |
+  ${{ vars.NEXT_PUBLIC_METICULOUS_PROJECT_ID }}:
+    api-token: ${{ secrets.METICULOUS_API_TOKEN }}
+    app-url: "http://localhost:3000"
 companion-assets-folder: "companion-assets"
 companion-assets-regex: "^/_next/static/"
 ```

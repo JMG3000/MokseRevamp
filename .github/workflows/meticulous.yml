@@ -67,7 +67,9 @@ jobs:
       - name: Run Meticulous tests
         uses: alwaysmeticulous/report-diffs-action/cloud-compute@v1
         with:
-          api-token: ${{ secrets.METICULOUS_API_TOKEN }}
-          app-url: "http://localhost:3000"
+          projects-yaml: |
+            ${{ vars.NEXT_PUBLIC_METICULOUS_PROJECT_ID }}:
+              api-token: ${{ secrets.METICULOUS_API_TOKEN }}
+              app-url: "http://localhost:3000"
           companion-assets-folder: "companion-assets"
           companion-assets-regex: "^/_next/static/"

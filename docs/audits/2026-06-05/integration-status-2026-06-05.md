@@ -63,6 +63,7 @@ Observed blockers:
 Required dashboard fixes:
 
 - Confirm GitHub Actions secret `METICULOUS_API_TOKEN` is the Meticulous API token expected by `alwaysmeticulous/report-diffs-action/cloud-compute@v1`.
+- Latest workflow wiring uses `projects-yaml` so the Meticulous project key and API token are passed together. If the OAuth-token error persists, replace `METICULOUS_API_TOKEN` with the project-specific API token from Meticulous project settings.
 
 Recorder status:
 
