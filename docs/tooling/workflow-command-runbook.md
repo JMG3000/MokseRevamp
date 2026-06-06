@@ -28,30 +28,6 @@ GitHub Actions secret, already added by repo owner:
 METICULOUS_API_TOKEN
 ```
 
-Required repository variable or deployment environment variable:
-
-```text
-NEXT_PUBLIC_METICULOUS_PROJECT_ID
-```
-
-Expected value format:
-
-```text
-The raw Meticulous project ID only. Do not paste workflow YAML, script tags, or command snippets into this variable.
-```
-
-Verify GitHub repository variables from a machine with GitHub CLI access:
-
-```powershell
-gh variable list --repo JMG3000/MokseRevamp
-```
-
-Set the public Meticulous project ID variable if it is missing:
-
-```powershell
-gh variable set NEXT_PUBLIC_METICULOUS_PROJECT_ID --repo JMG3000/MokseRevamp --body "<meticulous-project-id>"
-```
-
 If the Meticulous workflow fails with `Could not retrieve project data` or ``projectId` is required when authenticating with an OAuth user token`, replace the GitHub Actions secret with the project-specific API token from the Meticulous project settings:
 
 ```powershell
@@ -59,6 +35,8 @@ gh secret set METICULOUS_API_TOKEN --repo JMG3000/MokseRevamp
 ```
 
 Do not use a personal/OAuth Meticulous user token for `METICULOUS_API_TOKEN` unless Meticulous support confirms the matching `projects-yaml` setup for this action.
+
+The browser recorder script uses the Meticulous recording token and only renders in local development or Vercel preview deployments. It is intentionally not tied to a `NEXT_PUBLIC_` variable and should not render in production.
 
 Confirm the workflow file exists:
 
@@ -109,7 +87,6 @@ Add runtime variables only after their values are confirmed:
 npx vercel@latest env add NOTION_TOKEN production preview development --scope jacob-garretts-projects
 npx vercel@latest env add NOTION_DATABASE_KEY production preview development --scope jacob-garretts-projects
 npx vercel@latest env add NOTION_BASE_URL production preview development --scope jacob-garretts-projects
-npx vercel@latest env add NEXT_PUBLIC_METICULOUS_PROJECT_ID production preview development --scope jacob-garretts-projects
 ```
 
 Do not commit `.vercel/`; it is local metadata and is ignored by Git.
@@ -150,7 +127,7 @@ Local syntax validation:
 npx --yes yaml-lint .circleci\config.yml
 ```
 
-Expected CircleCI job path:
+Expected CircleCI job path on `dev-test` and `main`:
 
 ```text
 npm ci
@@ -165,6 +142,57 @@ Dashboard action still required:
 
 ```text
 Connect CircleCI to GitHub repo JMG3000/MokseRevamp.
+```
+
+## Branch And Promotion Workflow
+
+Branch roles:
+
+```text
+dev-test  Development validation branch; CircleCI, GitHub Actions, Meticulous, and security checks run here.
+main      Production branch; Vercel should use this branch for production deployments.
+```
+
+Push the current development branch:
+
+```powershell
+git -C D:\repos\codex-projects\MokseRevamp push -u origin dev-test
+```
+
+Push the current verified commit to production manually when needed:
+
+```powershell
+git -C D:\repos\codex-projects\MokseRevamp push origin HEAD:main
+```
+
+The GitHub Actions workflow `.github/workflows/promote-dev-test.yml` also verifies `dev-test` and pushes the exact checked commit to `main` when its configured checks pass. Keep `main` configured as the Vercel production branch.
+
+## GitHub Security Workflows
+
+Repo config:
+
+```text
+.github/workflows/codeql.yml
+.github/workflows/security.yml
+.github/dependabot.yml
+```
+
+Security workflow coverage:
+
+```text
+CodeQL Advanced code scanning
+Dependabot npm and GitHub Actions updates targeted at dev-test
+Dependency review on pull requests
+npm audit high-severity gate
+Static secret pattern scan
+```
+
+Dashboard actions still required:
+
+```text
+Enable GitHub code scanning / Advanced Security where the private repo plan allows it.
+Enable secret scanning and push protection where available.
+Confirm branch protection rules for main after CircleCI and GitHub Actions are connected.
 ```
 
 ## CodeRabbit CLI Through WSL

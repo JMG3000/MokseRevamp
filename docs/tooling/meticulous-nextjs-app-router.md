@@ -17,9 +17,14 @@ Because this repo currently uses route-group layouts instead of one root `app/la
 ## Required Values
 
 - GitHub Actions secret: `METICULOUS_API_TOKEN`
-- GitHub Actions repository variable or deployment env var: `NEXT_PUBLIC_METICULOUS_PROJECT_ID`
+- Browser recorder token: stored in `components/tooling/meticulous-recorder.tsx` per the Meticulous recorder-script setup already provided for this repository.
 
-The recorder script only renders when `NEXT_PUBLIC_METICULOUS_PROJECT_ID` is set.
+The recorder script only renders in local development or Vercel preview deployments:
+
+- `process.env.NODE_ENV === "development"`
+- `process.env.VERCEL_ENV === "preview"`
+
+It sets `data-is-production-environment="false"` and does not render on the Vercel production deployment from `main`.
 
 ## Deterministic Rendering
 

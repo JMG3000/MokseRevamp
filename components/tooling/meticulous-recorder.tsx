@@ -1,14 +1,19 @@
 /* eslint-disable @next/next/no-sync-scripts */
-export function MeticulousRecorder() {
-  const projectId = process.env.NEXT_PUBLIC_METICULOUS_PROJECT_ID;
+const METICULOUS_RECORDING_TOKEN = "18MdcWMCkU9vPtqyoGjw2i2VfcI8EAxZVYgOe0GH";
 
-  if (!projectId) {
+export function MeticulousRecorder() {
+  const shouldRecord =
+    process.env.NODE_ENV === "development" ||
+    process.env.VERCEL_ENV === "preview";
+
+  if (!shouldRecord) {
     return null;
   }
 
   return (
     <script
-      data-project-id={projectId}
+      data-recording-token={METICULOUS_RECORDING_TOKEN}
+      data-is-production-environment="false"
       src="https://snippet.meticulous.ai/v1/meticulous.js"
     />
   );

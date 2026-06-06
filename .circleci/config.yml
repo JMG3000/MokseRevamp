@@ -45,4 +45,9 @@ jobs:
 workflows:
   verify:
     jobs:
-      - verify
+      - verify:
+          filters:
+            branches:
+              only:
+                - dev-test
+                - main
