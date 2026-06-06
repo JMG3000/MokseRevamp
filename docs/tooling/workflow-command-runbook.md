@@ -66,6 +66,24 @@ app/(Public Pages)/layout.tsx
 app/(Admin Dashboard)/layout.tsx
 ```
 
+Source coverage:
+
+```text
+next.config.ts enables productionBrowserSourceMaps so Meticulous can find .js.map files under /_next/static/.
+```
+
+Run local cloud coverage safely:
+
+```powershell
+$env:METICULOUS_API_TOKEN = "<project-api-token>"
+npx @alwaysmeticulous/cli ci run-local `
+  --apiToken="$env:METICULOUS_API_TOKEN" `
+  --headless `
+  --appUrl https://mokserevamp.vercel.app/
+```
+
+Do not paste the token directly into commands that may be saved in shell history.
+
 ## Vercel Project
 
 Current Vercel project:

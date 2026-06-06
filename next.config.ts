@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  productionBrowserSourceMaps: true,
   // output: 'standalone',
-  allowedDevOrigins: ['10.0.0.186'],
+  allowedDevOrigins: ["10.0.0.186"],
   turbopack: {
     root: process.cwd(),
   },

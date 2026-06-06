@@ -70,6 +70,28 @@ companion-assets-folder: "companion-assets"
 companion-assets-regex: "^/_next/static/"
 ```
 
+## Source Coverage
+
+Meticulous source coverage requires browser source maps to be served in the environment being tested. MokseRevamp enables this through Next.js:
+
+```ts
+productionBrowserSourceMaps: true
+```
+
+This emits `.js.map` files next to the compiled browser chunks in `/_next/static/`, which Meticulous can autodetect from the adjacent `.map` path or source map comments.
+
+Run the Meticulous CLI without putting the token directly in shell history:
+
+```powershell
+$env:METICULOUS_API_TOKEN = "<project-api-token>"
+npx @alwaysmeticulous/cli ci run-local `
+  --apiToken="$env:METICULOUS_API_TOKEN" `
+  --headless `
+  --appUrl https://mokserevamp.vercel.app/
+```
+
+Serving production source maps exposes client-side source maps publicly. Keep this enabled only while source coverage is required, or move coverage runs to preview deployments if production source-map exposure becomes unacceptable.
+
 ## Meticulous Project Setting
 
 In the Meticulous dashboard, set Network Stubbing to:
