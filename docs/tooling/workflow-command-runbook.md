@@ -182,7 +182,7 @@ Security workflow coverage:
 ```text
 CodeQL Advanced code scanning
 Dependabot npm and GitHub Actions updates targeted at dev-test
-Dependency review on pull requests
+Dependency review on pull requests, currently informational until GitHub Dependency Graph / Advanced Security is enabled for the private repo
 npm audit high-severity gate
 Static secret pattern scan
 ```

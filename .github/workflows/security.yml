@@ -35,6 +35,7 @@ jobs:
     name: Dependency review
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,7 +54,7 @@ jobs:
         run: |
           set -euo pipefail
           pattern='(notion_secret_|secret_[A-Za-z0-9]{16,}|github_pat_|ghp_[A-Za-z0-9]{36,}|sk-[A-Za-z0-9]{20,}|ctx7sk-|xox[baprs]-|AKIA[0-9A-Z]{16})'
-          if git grep -n -E "$pattern" -- . ':!package-lock.json'; then
+          if git grep -n -E "$pattern" -- . ':!package-lock.json' ':!.github/workflows/security.yml'; then
             echo "Potential secret pattern found in tracked source."
             exit 1
           fi

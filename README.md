@@ -112,7 +112,7 @@ http://localhost:3000
 - Enable Vercel Web Analytics for `mokserevamp`
 - Connect CircleCI to `JMG3000/MokseRevamp`
 - Keep `METICULOUS_API_TOKEN` in GitHub Actions secrets only
-- Enable GitHub code scanning for CodeQL uploads
+- Enable GitHub code scanning / Advanced Security for CodeQL uploads and hard-gated dependency review
 - Keep local secret notes in ignored files only
 - Replace the disabled admin placeholder with production auth before launch
 - Complete Sentry setup
