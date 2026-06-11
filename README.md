@@ -10,7 +10,7 @@ MokseRevamp is the clean production-prep repository for the Mokse website. It wa
 - **Primary backend dependency:** Notion API for live resource data
 - **Deployment target:** Vercel
 - **Workflow tooling:** GitHub Actions, CircleCI, CodeQL, Dependabot, dependency review, static secret scanning, CodeRabbit CLI, Meticulous, Linear (`JAK-5`)
-- **Observability/testing in progress:** Vercel Web Analytics, Meticulous visual/session regression workflow; Sentry still pending
+- **Observability/testing in progress:** Vercel Web Analytics, Vercel Speed Insights, Meticulous visual/session regression workflow; Sentry still pending
 
 ## Important Directories
 
@@ -65,6 +65,8 @@ The Stop The Stigma countdown has deterministic rendering support for Meticulous
 
 Vercel Web Analytics is installed with `@vercel/analytics` and mounted in both App Router route-group layouts. Enable Web Analytics for the `mokserevamp` Vercel project before launch.
 
+Vercel Speed Insights is installed with `@vercel/speed-insights` and mounted in both App Router route-group layouts.
+
 ## CircleCI
 
 CircleCI repo configuration lives at `.circleci/config.yml`. It runs install, typecheck, lint, build, and companion-assets preparation on `dev-test` and `main`.
@@ -78,7 +80,7 @@ dev-test  Development validation branch
 main      Vercel production branch
 ```
 
-Push all development changes to `dev-test`. The `Promote dev-test to main` GitHub Actions workflow verifies typecheck, lint, build, high-severity npm audit, companion assets, and Meticulous before pushing the verified commit to `main`. Vercel production should stay connected to `main`.
+Push all development changes to `dev-test`. The `Dev Test Gate` GitHub Actions workflow verifies lint, typecheck, build, high-severity npm audit, static secret scanning, CodeQL, companion assets, and Meticulous before pushing the verified commit to `main`. Vercel production should stay connected to `main`.
 
 ## CodeRabbit
 
@@ -118,6 +120,7 @@ http://localhost:3000
 - Connect CircleCI to `JMG3000/MokseRevamp`
 - Keep `METICULOUS_API_TOKEN` in GitHub Actions secrets only
 - Keep `NEXT_PUBLIC_METICULOUS_PROJECT_ID` configured in GitHub repo variables and Vercel preview/development env vars for the recorder script
+- Keep `NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER` configured in GitHub repo variables and Vercel preview/development env vars when recorder capture is needed
 - Enable GitHub code scanning / Advanced Security for CodeQL uploads and hard-gated dependency review
 - Keep local secret notes in ignored files only
 - Replace the disabled admin placeholder with production auth before launch

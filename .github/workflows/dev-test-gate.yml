@@ -1,0 +1,181 @@
+name: Dev Test Gate
+
+on:
+  push:
+    branches: ["dev-test"]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+  packages: read
+  pull-requests: write
+  security-events: write
+  statuses: read
+
+concurrency:
+  group: dev-test-gate
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate app and security baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER: "1"
+          NEXT_PUBLIC_METICULOUS_DETERMINISTIC: "1"
+          NEXT_PUBLIC_METICULOUS_PROJECT_ID: ${{ vars.NEXT_PUBLIC_METICULOUS_PROJECT_ID }}
+          NEXT_PUBLIC_METICULOUS_SIMULATED_DATE: "Fri, 17 May 2024 13:35:20 GMT"
+
+      - name: Audit high severity vulnerabilities
+        run: npm audit --audit-level=high
+
+      - name: Static secret pattern scan
+        run: |
+          set -euo pipefail
+          pattern='(notion_secret_|secret_[A-Za-z0-9]{16,}|github_pat_|ghp_[A-Za-z0-9]{36,}|sk-[A-Za-z0-9]{20,}|ctx7sk-|xox[baprs]-|AKIA[0-9A-Z]{16})'
+          if git grep -n -E "$pattern" -- . ':!package-lock.json' ':!.github/workflows/*.yml'; then
+            echo "Potential secret pattern found in tracked source."
+            exit 1
+          fi
+
+      - name: Prepare companion assets
+        run: |
+          mkdir -p companion-assets/_next
+          cp -r .next/static companion-assets/_next/
+          ls -la companion-assets
+          ls -la companion-assets/_next/static | head
+
+      - name: Upload companion assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: companion-assets
+          path: companion-assets
+          retention-days: 3
+
+  codeql:
+    name: CodeQL Advanced
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          build-mode: none
+          queries: security-extended,security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:javascript-typescript"
+
+  meticulous:
+    name: Meticulous visual tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER: "1"
+          NEXT_PUBLIC_METICULOUS_DETERMINISTIC: "1"
+          NEXT_PUBLIC_METICULOUS_PROJECT_ID: ${{ vars.NEXT_PUBLIC_METICULOUS_PROJECT_ID }}
+          NEXT_PUBLIC_METICULOUS_SIMULATED_DATE: "Fri, 17 May 2024 13:35:20 GMT"
+
+      - name: Prepare companion assets
+        run: |
+          mkdir -p companion-assets/_next
+          cp -r .next/static companion-assets/_next/
+          ls -la companion-assets
+          ls -la companion-assets/_next/static | head
+
+      - name: Start app
+        run: |
+          npm start > meticulous-next.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://localhost:3000 > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat meticulous-next.log
+          exit 1
+        env:
+          PORT: 3000
+          NODE_ENV: production
+          NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER: "1"
+          NEXT_PUBLIC_METICULOUS_DETERMINISTIC: "1"
+          NEXT_PUBLIC_METICULOUS_PROJECT_ID: ${{ vars.NEXT_PUBLIC_METICULOUS_PROJECT_ID }}
+          NEXT_PUBLIC_METICULOUS_SIMULATED_DATE: "Fri, 17 May 2024 13:35:20 GMT"
+
+      - name: Run Meticulous tests
+        uses: alwaysmeticulous/report-diffs-action/cloud-compute@v1
+        with:
+          projects-yaml: |
+            ${{ vars.NEXT_PUBLIC_METICULOUS_PROJECT_ID }}:
+              api-token: ${{ secrets.METICULOUS_API_TOKEN }}
+              app-url: "http://localhost:3000"
+          companion-assets-folder: "companion-assets"
+          companion-assets-regex: "^/_next/static/"
+
+  promote-to-main:
+    name: Promote dev-test to main
+    needs:
+      - validate
+      - codeql
+      - meticulous
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev-test'
+    timeout-minutes: 10
+    steps:
+      - name: Checkout dev-test
+        uses: actions/checkout@v4
+        with:
+          ref: dev-test
+          fetch-depth: 0
+
+      - name: Push verified dev-test to main
+        run: |
+          git fetch origin main
+          git push origin HEAD:main

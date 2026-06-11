@@ -32,9 +32,10 @@ GitHub Actions repository variable and Vercel preview/development env var:
 
 ```text
 NEXT_PUBLIC_METICULOUS_PROJECT_ID
+NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER
 ```
 
-In this repo, `NEXT_PUBLIC_METICULOUS_PROJECT_ID` feeds the Meticulous recorder token used by the native `<script>` tag. The recorder also has a fallback token in code so the setup does not silently disappear while dashboard wiring is being verified.
+In this repo, `NEXT_PUBLIC_METICULOUS_PROJECT_ID` feeds the Meticulous recorder token used by the native `<script>` tag. `NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER=1` enables the recorder in local development and Vercel preview builds. The recorder also has a fallback token in code so the setup does not silently disappear while dashboard wiring is being verified.
 
 If the Meticulous workflow fails with `Could not retrieve project data` or ``projectId` is required when authenticating with an OAuth user token`, replace the GitHub Actions secret with the project-specific API token from the Meticulous project settings:
 
@@ -114,6 +115,7 @@ npx vercel@latest env add NOTION_TOKEN production preview development --scope ja
 npx vercel@latest env add NOTION_DATABASE_KEY production preview development --scope jacob-garretts-projects
 npx vercel@latest env add NOTION_BASE_URL production preview development --scope jacob-garretts-projects
 npx vercel@latest env add NEXT_PUBLIC_METICULOUS_PROJECT_ID preview development --scope jacob-garretts-projects
+npx vercel@latest env add NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER preview development --scope jacob-garretts-projects
 ```
 
 Do not commit `.vercel/`; it is local metadata and is ignored by Git.
@@ -124,6 +126,7 @@ Package and layout integration:
 
 ```text
 @vercel/analytics
+@vercel/speed-insights
 app/(Public Pages)/layout.tsx
 app/(Admin Dashboard)/layout.tsx
 ```
@@ -132,12 +135,14 @@ The app mounts:
 
 ```tsx
 <Analytics />
+<SpeedInsights />
 ```
 
 Dashboard action still required:
 
 ```text
 Enable Web Analytics for project `mokserevamp` in Vercel.
+Enable Speed Insights for project `mokserevamp` in Vercel if dashboard collection is not already active.
 ```
 
 ## CircleCI
@@ -205,7 +210,7 @@ Push the current verified commit to production manually when needed:
 git -C D:\repos\codex-projects\MokseRevamp push origin HEAD:main
 ```
 
-The GitHub Actions workflow `.github/workflows/promote-dev-test.yml` also verifies `dev-test` and pushes the exact checked commit to `main` when its configured checks pass. Keep `main` configured as the Vercel production branch.
+The GitHub Actions workflow `.github/workflows/dev-test-gate.yml` verifies `dev-test` with validate, CodeQL, and Meticulous jobs, then pushes the exact checked commit to `main` when all gate jobs pass. Keep `main` configured as the Vercel production branch.
 
 Historical branch note:
 

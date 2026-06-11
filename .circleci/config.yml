@@ -29,6 +29,7 @@ jobs:
           command: npm run build
           environment:
             NODE_ENV: production
+            NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER: "1"
             NEXT_PUBLIC_METICULOUS_DETERMINISTIC: "1"
             NEXT_PUBLIC_METICULOUS_SIMULATED_DATE: "Fri, 17 May 2024 13:35:20 GMT"
       - run:

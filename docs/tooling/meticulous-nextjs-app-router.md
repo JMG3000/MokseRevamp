@@ -18,9 +18,10 @@ Because this repo currently uses route-group layouts instead of one root `app/la
 
 - GitHub Actions secret: `METICULOUS_API_TOKEN`
 - GitHub Actions repository variable or Vercel preview/development env var: `NEXT_PUBLIC_METICULOUS_PROJECT_ID`
+- GitHub Actions repository variable or Vercel preview/development env var: `NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER`
 - Browser recorder fallback token: stored in `components/tooling/meticulous-recorder.tsx` per the Meticulous recorder-script setup already provided for this repository.
 
-`NEXT_PUBLIC_METICULOUS_PROJECT_ID` feeds the native recorder script token/project attribute. The recorder script only renders in local development or Vercel preview deployments:
+`NEXT_PUBLIC_METICULOUS_PROJECT_ID` feeds the native recorder script token/project attribute. `NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER=1` enables the recorder. The recorder script only renders in local development or Vercel preview deployments:
 
 - `process.env.NODE_ENV === "development"`
 - `process.env.VERCEL_ENV === "preview"`

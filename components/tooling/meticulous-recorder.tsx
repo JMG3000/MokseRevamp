@@ -6,9 +6,13 @@ export function MeticulousRecorder() {
   const recordingToken =
     process.env.NEXT_PUBLIC_METICULOUS_PROJECT_ID ??
     FALLBACK_METICULOUS_RECORDING_TOKEN;
+  const recorderEnabled =
+    process.env.NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER === "1" ||
+    process.env.NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER === "true";
   const shouldRecord =
-    process.env.NODE_ENV === "development" ||
-    process.env.VERCEL_ENV === "preview";
+    recorderEnabled &&
+    (process.env.NODE_ENV === "development" ||
+      process.env.VERCEL_ENV === "preview");
 
   if (!shouldRecord || !recordingToken) {
     return null;

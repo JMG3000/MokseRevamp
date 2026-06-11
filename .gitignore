@@ -43,6 +43,8 @@ yarn-error.log*
 next-env.d.ts
 
 # other files
+.agents/
+.claude/
 mokse_org_assets/
 env.download
 *.download
