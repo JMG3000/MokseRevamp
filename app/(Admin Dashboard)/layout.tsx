@@ -4,6 +4,7 @@ import Footer from "@/app/(Admin Dashboard)/components/footer";
 import { Provider } from "@/app/provider";
 import { MeticulousRecorder } from "@/components/tooling/meticulous-recorder";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Navbar from "@/app/(Admin Dashboard)/components/navbar";
 import type { Viewport } from 'next';
 
@@ -37,6 +38,7 @@ export default function RootLayout({
           <Footer />
         </Provider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
