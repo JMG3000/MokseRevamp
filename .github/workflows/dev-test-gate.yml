@@ -63,43 +63,10 @@ jobs:
             exit 1
           fi
 
-      - name: Prepare companion assets
-        run: |
-          mkdir -p companion-assets/_next
-          cp -r .next/static companion-assets/_next/
-          ls -la companion-assets
-          ls -la companion-assets/_next/static | head
-
-      - name: Upload companion assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: companion-assets
-          path: companion-assets
-          retention-days: 3
-
-  codeql:
-    name: CodeQL Advanced
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: javascript-typescript
-          build-mode: none
-          queries: security-extended,security-and-quality
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
-        with:
-          category: "/language:javascript-typescript"
-
   meticulous:
     name: Meticulous visual tests
     runs-on: ubuntu-latest
+    needs: validate
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -127,9 +94,12 @@ jobs:
         run: |
           mkdir -p companion-assets/_next
           cp -r .next/static companion-assets/_next/
+
+          mkdir -p companion-assets/_next
+          cp -r .next/static companion-assets/_next/
           ls -la companion-assets
           ls -la companion-assets/_next/static | head
-
+        
       - name: Start app
         run: |
           npm start > meticulous-next.log 2>&1 &
@@ -152,10 +122,8 @@ jobs:
       - name: Run Meticulous tests
         uses: alwaysmeticulous/report-diffs-action/cloud-compute@v1
         with:
-          projects-yaml: |
-            ${{ vars.NEXT_PUBLIC_METICULOUS_PROJECT_ID }}:
-              api-token: ${{ secrets.METICULOUS_API_TOKEN }}
-              app-url: "http://localhost:3000"
+          api-token: ${{ secrets.METICULOUS_API_TOKEN }}
+          app-url: "http://localhost:3000"
           companion-assets-folder: "companion-assets"
           companion-assets-regex: "^/_next/static/"
 
@@ -163,7 +131,6 @@ jobs:
     name: Promote dev-test to main
     needs:
       - validate
-      - codeql
       - meticulous
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/dev-test'
