@@ -1,4 +1,6 @@
 # MokseRevamp
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/JMG3000/MokseRevamp/tree/main.svg?style=svg&circle-token=CCIPRJ_F46quKQM532yhNKf59ShjQ_3456209746311ffb53850dd7656d2b6df98b77b9)](https://dl.circleci.com/status-badge/redirect/gh/JMG3000/MokseRevamp/tree/main)
+
 
 MokseRevamp is the clean production-prep repository for the Mokse website. It was imported from the working prototype with a fresh Git history so it is not linked to the old `MokseWebsite` repository history.
 
