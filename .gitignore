@@ -52,7 +52,7 @@ env.download
 secrets/
 *.env
 *.env.*
-
+AGENTS.md
 SECRET_README.md
 README.secret.md
 *.secret.md

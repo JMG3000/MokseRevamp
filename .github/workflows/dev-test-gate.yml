@@ -1,8 +1,6 @@
 name: Dev Test Gate
 
 on:
-  push:
-    branches: ["dev-test"]
   workflow_dispatch:
 
 permissions:
@@ -63,6 +61,26 @@ jobs:
             exit 1
           fi
 
+  codeql:
+    name: CodeQL Advanced
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          build-mode: none
+          queries: security-extended,security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:javascript-typescript"
+
   meticulous:
     name: Meticulous visual tests
     runs-on: ubuntu-latest
@@ -94,12 +112,9 @@ jobs:
         run: |
           mkdir -p companion-assets/_next
           cp -r .next/static companion-assets/_next/
-
-          mkdir -p companion-assets/_next
-          cp -r .next/static companion-assets/_next/
           ls -la companion-assets
           ls -la companion-assets/_next/static | head
-        
+
       - name: Start app
         run: |
           npm start > meticulous-next.log 2>&1 &
@@ -131,6 +146,7 @@ jobs:
     name: Promote dev-test to main
     needs:
       - validate
+      - codeql
       - meticulous
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/dev-test'

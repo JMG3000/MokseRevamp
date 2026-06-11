@@ -6,7 +6,6 @@ import { MeticulousRecorder } from "@/components/tooling/meticulous-recorder";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Navbar from "@/app/(Admin Dashboard)/components/navbar";
-import type { Viewport } from 'next';
 
 const openSans = Open_Sans({
   weight: ["400", "600", "700"],

@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:executing-plans` to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Consolidate GitHub Actions to one `dev-test` deployment gate, prune ignored local skills, and avoid burning GitHub Actions minutes until explicitly approved.
+**Goal:** Consolidate GitHub Actions to one manual-only `dev-test` deployment gate, prune ignored local skills, and keep moving through local, CircleCI, CodeRabbit CLI, and Vercel validation while GitHub Actions minutes are unavailable until June 30, 2026.
 
-**Architecture:** `dev-test` is the active engineering branch and `main` remains Vercel production. GitHub Actions should use only `.github/workflows/dev-test-gate.yml` for validation, CodeQL, Meticulous, and promotion; CircleCI remains a secondary validation dashboard and must not promote production.
+**Architecture:** `dev-test` is the active engineering branch and `main` remains Vercel production. GitHub Actions should use only `.github/workflows/dev-test-gate.yml`, with automatic triggers disabled until minutes reset. CircleCI, local validation, CodeRabbit CLI, and Vercel CLI are the active no-wait path.
 
 **Tech Stack:** Next.js, GitHub Actions, CircleCI, CodeQL, Meticulous, CodeRabbit CLI, Vercel.
 
@@ -19,7 +19,7 @@
   - `.github/workflows/nextjs.yml`
 - `.github/workflows/security.yml` is absent.
 - `.agents/` is ignored by `.gitignore`, but local ignored skills still include `supabase` and full `vercel` / `build-web-apps` trees.
-- GitHub Actions minutes are exhausted for the month, so do not push until explicitly approved.
+- GitHub Actions minutes are exhausted until June 30, 2026, so automatic GitHub Actions triggers must be disabled before any push.
 
 ## Task 1: Remove Redundant GitHub Actions Workflows
 
@@ -30,6 +30,7 @@
 - Keep: `.github/workflows/dev-test-gate.yml`
 
 - [ ] Delete the three redundant workflow files.
+- [ ] Change `.github/workflows/dev-test-gate.yml` to `workflow_dispatch` only so pushes do not consume GitHub Actions minutes.
 - [ ] Verify only the deployment gate remains:
 
 ```powershell
@@ -121,7 +122,17 @@ npm audit --audit-level=high
 - [ ] Run the hardcoded secret regex check:
 
 ```powershell
-git grep -n -E '(notion_secret_|secret_[A-Za-z0-9]{16,}|github_pat_|ghp_[A-Za-z0-9]{36,}|sk-[A-Za-z0-9]{20,}|ctx7sk-|xox[baprs]-|AKIA[0-9A-Z]{16})' -- . ':!package-lock.json' ':!.github/workflows/*.yml'
+$secretPattern = @(
+  'notion_' + 'secret_',
+  'secret_' + '[A-Za-z0-9]{16,}',
+  'github_pat_',
+  'ghp_' + '[A-Za-z0-9]{36,}',
+  'sk-' + '[A-Za-z0-9]{20,}',
+  'ctx7' + 'sk-',
+  'xox[baprs]-',
+  'AKIA' + '[0-9A-Z]{16}'
+) -join '|'
+git grep -n -E $secretPattern -- . ':!package-lock.json' ':!.github/workflows/*.yml'
 ```
 
 Expected result: no matches.
@@ -145,7 +156,7 @@ circleci config validate
 ~/.local/bin/coderabbit review --agent --type uncommitted --dir web
 ```
 
-## Task 4: Commit Locally Only
+## Task 4: Commit And Push Without GitHub Actions Burn
 
 **Files:**
 - Stage only tracked CI/config/docs files.
@@ -158,8 +169,19 @@ git status --short
 ```
 
 - [ ] Commit locally on `dev-test`.
-- [ ] Do not push to `dev-test` until explicitly approved because GitHub Actions minutes are exhausted.
+- [ ] Push `dev-test` only after verifying `.github/workflows/dev-test-gate.yml` has no `push` trigger.
+- [ ] Block the push if any GitHub Actions workflow has an automatic push trigger:
+
+```powershell
+$pushTriggers = Select-String -Path .github/workflows/*.yml -Pattern '^\s*push\s*:'
+if ($pushTriggers) {
+  $pushTriggers
+  throw "GitHub Actions push trigger detected. Do not push while Actions minutes are unavailable."
+}
+```
+
 - [ ] Do not push to `main`.
+- [ ] If production deployment is needed before June 30, deploy through Vercel CLI after local/CircleCI validation instead of using GitHub Actions promotion.
 
 ## Task 5: Log To Linear And Audit Notes
 
@@ -178,11 +200,12 @@ git status --short
 - `.agents/` is ignored and not staged.
 - Local validation has either passed or failures are explicitly documented.
 - A local commit exists on `dev-test`.
-- No remote push occurs without explicit approval.
+- Remote pushes do not trigger GitHub Actions automatically.
 
 ## Assumptions
 
 - `main` remains Vercel production.
 - `dev-test` remains the active engineering gate.
 - CircleCI remains secondary and does not control production promotion.
+- GitHub Actions automatic triggers remain disabled until minutes reset or you explicitly re-enable them.
 - The existing commit `e94742f` remains the baseline for this cleanup.
