@@ -125,7 +125,7 @@ npm audit --audit-level=high
 $secretPattern = @(
   'notion_' + 'secret_',
   'secret_' + '[A-Za-z0-9]{16,}',
-  'github_pat_',
+  'github_' + 'pat_',
   'ghp_' + '[A-Za-z0-9]{36,}',
   'sk-' + '[A-Za-z0-9]{20,}',
   'ctx7' + 'sk-',
