@@ -8,7 +8,6 @@ import {
   Container,
   Link as ChakraLink,
   Button,
-  useBreakpointValue,
   Text,
   Heading,
   Center,
@@ -19,7 +18,7 @@ import {
   ClientOnly,
   Skeleton,
 } from "@chakra-ui/react";
-import { useColorMode, useColorModeValue } from "../ui/color-mode";
+import { useColorModeValue } from "../ui/color-mode";
 
 import { poppins } from "../ui/fonts";
 import checkDeviceSize from "../ui/breakpoints";

@@ -1,12 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import NextLink from "next/link";
 import ServiceCard from "@/components/services/service-card";
 import SupportCard from "@/components/services/support-card";
 import FaqItem from "@/components/services/faq-item";
-import { services, supportOptions, faqItems } from "@/data/services";
-import { Link as ChakraLink, SimpleGrid, Stack } from "@chakra-ui/react";
+import { services, supportOptions } from "@/data/services";
+import { SimpleGrid, Stack } from "@chakra-ui/react";
 import {
   HeaderTemplate,
   PageBuilder,

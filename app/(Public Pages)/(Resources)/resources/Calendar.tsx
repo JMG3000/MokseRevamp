@@ -1,7 +1,6 @@
 "use client"
 
 import {
-    Box,
     Button,
     Card,
     Center,
@@ -17,7 +16,6 @@ import {
     Time,
     getLocalTimeZone,
     isToday,
-    isWeekend,
 } from "@internationalized/date"
 import { useState } from "react"
 import { LuGlobe } from "react-icons/lu"

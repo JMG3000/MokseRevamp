@@ -8,7 +8,6 @@ import {
   Center,
   Text,
   VStack,
-  Image,
   Heading,
   Button,
   Strong,
@@ -156,14 +155,7 @@ export default function StopTheStigmaContent({
             direction={{ base: "column", lg: "row" }}
             align={"center"}
           >
-            <Image
-              asChild
-              aspectRatio={4 / 5}
-              fit={"contain"}
-              maxW={{ base: "100%", lg: "50%" }}
-              mx={"auto"}
-              w={"100%"}
-            >
+            <Box aspectRatio={4 / 5} maxW={{ base: "100%", lg: "50%" }} mx={"auto"} w={"100%"}>
               <NextImage
                 src={"/assets/stop-the-stigma/Linkedin-Carousels.png"}
                 width={1080}
@@ -171,8 +163,9 @@ export default function StopTheStigmaContent({
                 alt={"Stop The Stigma carousel"}
                 fetchPriority={"high"}
                 sizes={"(max-width:1080px) 100vw,1080px"}
+                style={{ width: "100%", height: "auto", objectFit: "contain" }}
               />
-            </Image>
+            </Box>
 
             <VStack
               align={{ base: "center", lg: "flex-start" }}

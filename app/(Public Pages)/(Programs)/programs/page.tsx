@@ -9,11 +9,8 @@ import {
     Flex,
     HStack,
     SimpleGrid,
-    Stack,
     Tabs,
     Tag,
-    VStack,
-    Image,
     Heading,
     Text,
     Link as ChakraLink,
@@ -120,15 +117,13 @@ export default function Programs() {
                                                 overflow={"hidden"}
                                             >
                                                 <Center bg={"gray.50"} p={{ base: 4, md: 6 }} h={{ base: "140px", md: "160px" }}>
-                                                    <Image asChild>
-                                                        <NextImage
-                                                            src={p.image}
-                                                            alt={p.imageAlt}
-                                                            width={240}
-                                                            height={80}
-                                                            style={{ objectFit: "contain", maxHeight: "100%", width: "auto" }}
-                                                        />
-                                                    </Image>
+                                                    <NextImage
+                                                        src={p.image}
+                                                        alt={p.imageAlt}
+                                                        width={240}
+                                                        height={80}
+                                                        style={{ objectFit: "contain", maxHeight: "100%", width: "auto" }}
+                                                    />
                                                 </Center>
 
                                                 <Card.Body p={{ base: 4, md: 5 }} gap={3}>
