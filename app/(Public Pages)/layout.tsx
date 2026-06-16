@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Open_Sans } from "next/font/google";
-import Footer from "@/app/(Admin Dashboard)/components/footer";
+import Footer from "@/components/common/footer";
 import { Provider } from "@/app/provider";
 import { MeticulousRecorder } from "@/components/tooling/meticulous-recorder";
 import { Analytics } from "@vercel/analytics/next";
