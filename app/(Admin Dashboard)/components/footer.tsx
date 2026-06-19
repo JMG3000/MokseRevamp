@@ -26,7 +26,7 @@ export default function Footer() {
         textAlign={"center"}
         hideFrom={"md"}
       >
-        <Text fontSize={{ base: "sm", md: "md" }}>Copyright &copy; 2025 Mokse</Text>
+        <Text fontSize={{ base: "sm", md: "md" }}>Copyright &copy; 2026 Mokse</Text>
         <Text fontSize={{ base: "sm", md: "md" }}>
           <ChakraLink as={NextLink} href='https://codingunited.vercel.app/'>Developed By Coding United</ChakraLink>
         </Text>
@@ -40,7 +40,7 @@ export default function Footer() {
         hideBelow={"md"}
       >
         <Text fontSize={{ md: "md", lg: "md" }}>
-          Copyright &copy; 2025 Mokse | <ChakraLink as={NextLink} href='https://codingunited.vercel.app/'>Developed By Coding United</ChakraLink>
+          Copyright &copy; 2026 Mokse | <ChakraLink as={NextLink} href='https://codingunited.vercel.app/'>Developed By Coding United</ChakraLink>
         </Text>
       </Box>
     </Container >
