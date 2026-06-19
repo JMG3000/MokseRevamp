@@ -1,13 +1,7 @@
 "use client";
 import {
-  Container,
   Box,
-  CloseButton,
-  Input,
-  InputGroup,
   Card,
-  HStack,
-  Heading,
   Button,
   Combobox,
   Portal,
@@ -18,7 +12,6 @@ import {
   Center,
   Tag,
   Stack,
-  Tabs,
 } from "@chakra-ui/react";
 
 import { Tooltip } from "@/components/ui/tooltip";
@@ -27,16 +20,10 @@ import { Icon } from "@/components/ui/icons/icon";
 
 import { resourceCollectionRegistry } from "./mockResourceRegistry";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 export default function Navigators() {
-  //Retrieve mock data from json file
-  const [searchlist, setSearchlist] = useState(null);
-
   const { contains } = useFilter({ sensitivity: "base" });
-
-  const [value, setValue] = useState("Initial value");
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [formData, setFormData] = useState<{
     searchRegion: string;

@@ -1,14 +1,37 @@
-"use client";
-
 import {
   HeaderTemplate,
   PageBuilder,
   SectionTemplate,
 } from "@/components/page-builder/template";
-import { Button, Card, Container, Heading, Stack, Text } from "@chakra-ui/react";
-import NextLink from "next/link";
+import { getAdminDashboardData } from "@/lib/admin-dal";
+import { getAdminUser } from "@/lib/admin-session";
+import { Button, Card, Container, Heading, Input, Stack, Text } from "@chakra-ui/react";
+import { loginAdmin, logoutAdmin } from "./actions";
 
-export default function Admin() {
+type AdminPageProps = {
+  searchParams?: Promise<{ auth?: string }>;
+};
+
+const getAuthMessage = (auth: string | undefined) => {
+  switch (auth) {
+    case "invalid":
+      return "Invalid admin credentials.";
+    case "missing-config":
+      return "Admin authentication is not configured.";
+    case "required":
+      return "Sign in to continue.";
+    case "signed-out":
+      return "Signed out.";
+    default:
+      return null;
+  }
+};
+
+export default async function Admin({ searchParams }: AdminPageProps) {
+  const user = await getAdminUser();
+  const authMessage = getAuthMessage((await searchParams)?.auth);
+  const dashboardData = user ? await getAdminDashboardData() : null;
+
   return (
     <PageBuilder>
       <HeaderTemplate imageHeight="0vh" />
@@ -17,20 +40,57 @@ export default function Admin() {
           <Card.Root>
             <Card.Header>
               <Heading size={{ base: "2xl", md: "3xl" }}>
-                Admin Access Disabled
+                {dashboardData ? "Admin Dashboard" : "Admin Sign In"}
               </Heading>
             </Card.Header>
             <Card.Body>
               <Stack gap={4}>
-                <Text>
-                  The prototype admin login has been disabled for production
-                  hardening. Re-enable this area only after server-side
-                  authentication, authorization, session management, and audit
-                  logging are configured.
-                </Text>
-                <Button asChild width="fit-content">
-                  <NextLink href="/">Return Home</NextLink>
-                </Button>
+                {!dashboardData && authMessage && (
+                  <Text color="orange.600">{authMessage}</Text>
+                )}
+                {dashboardData ? (
+                  <>
+                    <Text>
+                      Signed in as {dashboardData.user.username}. Session issued{" "}
+                      {new Date(dashboardData.user.authenticatedAt).toISOString()}.
+                    </Text>
+                    <Stack as="ul" gap={2} pl={4}>
+                      {dashboardData.checks.map((check) => (
+                        <Text as="li" key={check}>
+                          {check}
+                        </Text>
+                      ))}
+                    </Stack>
+                    <form action={logoutAdmin}>
+                      <Button type="submit" width="fit-content">
+                        Sign Out
+                      </Button>
+                    </form>
+                  </>
+                ) : (
+                  <form action={loginAdmin}>
+                    <Stack gap={4}>
+                      <Input
+                        aria-label="Admin username"
+                        autoComplete="username"
+                        name="username"
+                        placeholder="Admin username"
+                        required
+                      />
+                      <Input
+                        aria-label="Password"
+                        autoComplete="current-password"
+                        name="password"
+                        placeholder="Password"
+                        required
+                        type="password"
+                      />
+                      <Button type="submit" width="fit-content">
+                        Sign In
+                      </Button>
+                    </Stack>
+                  </form>
+                )}
               </Stack>
             </Card.Body>
           </Card.Root>

@@ -17,8 +17,6 @@ import {
   CloseButton,
   Portal,
   Heading,
-  Center,
-  Card,
   StackProps,
 } from "@chakra-ui/react";
 import {
@@ -28,12 +26,9 @@ import {
 import { useColorMode } from "@/components/ui/color-mode";
 import { useEffect, useState } from "react";
 import { openSans } from "@/components/ui/fonts";
-import useDeviceSize from "@/components/ui/breakpoints";
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
-  const deviceSize = useDeviceSize();
-  const notMobileDevice = deviceSize !== "base" && deviceSize !== "sm";
 
   const [isFixed, setIsFixed] = useState(false);
 

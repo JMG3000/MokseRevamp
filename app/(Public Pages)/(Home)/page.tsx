@@ -5,24 +5,17 @@ import FeatureCard from "@/components/home/feature-card";
 import { empowerment } from "@/data/empowerment";
 import { getInvolved } from "@/data/get-involved";
 import {
-  Float,
   Container,
   Box,
   Text,
   Button,
-  AbsoluteCenter,
   VStack,
   Heading,
   Link as ChakraLink,
-  Center,
   SimpleGrid,
-  GridItem,
   Stack,
   Card,
-  Image as ChakraImage,
-  HStack,
   AspectRatio,
-  Grid,
 } from "@chakra-ui/react";
 import { poppins } from "@/components/ui/fonts";
 // import { openSans } from "@/components/ui/fonts"; 

@@ -8,7 +8,6 @@ import {
   Container,
   Link as ChakraLink,
   Button,
-  useBreakpointValue,
   Text,
   Heading,
   Center,
@@ -19,7 +18,7 @@ import {
   ClientOnly,
   Skeleton,
 } from "@chakra-ui/react";
-import { useColorMode, useColorModeValue } from "../ui/color-mode";
+import { useColorModeValue } from "../ui/color-mode";
 
 import { poppins } from "../ui/fonts";
 import checkDeviceSize from "../ui/breakpoints";
@@ -350,7 +349,7 @@ export default function Footer() {
 
             <Center>
               <HStack h={"10vh"}>
-                <p>Copyright &copy; 2025 Mokse | <ChakraLink as={NextLink} href='https://codingunited.vercel.app/'>Developed By Coding United</ChakraLink> </p>
+                <p>Copyright &copy; 2026 Mokse | <ChakraLink as={NextLink} href='https://codingunited.vercel.app/'>Developed By Coding United</ChakraLink> </p>
               </HStack>
             </Center>
           </VStack>

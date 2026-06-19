@@ -3,10 +3,10 @@ import { Open_Sans } from "next/font/google";
 import Footer from "@/app/(Admin Dashboard)/components/footer";
 import { Provider } from "@/app/provider";
 import { MeticulousRecorder } from "@/components/tooling/meticulous-recorder";
+import { GoogleTag } from "@/components/tooling/google-tag";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Navbar from "@/app/(Admin Dashboard)/components/navbar";
-import type { Viewport } from 'next';
 
 const openSans = Open_Sans({
   weight: ["400", "600", "700"],
@@ -29,6 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <GoogleTag />
         <MeticulousRecorder />
       </head>
       <body className={`${openSans.variable} antialiased`}>

@@ -17,9 +17,11 @@ Because this repo currently uses route-group layouts instead of one root `app/la
 ## Required Values
 
 - GitHub Actions secret: `METICULOUS_API_TOKEN`
-- Browser recorder token: stored in `components/tooling/meticulous-recorder.tsx` per the Meticulous recorder-script setup already provided for this repository.
+- GitHub Actions repository variable or Vercel preview/development env var: `NEXT_PUBLIC_METICULOUS_PROJECT_ID`
+- GitHub Actions repository variable or Vercel preview/development env var: `NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER`
+- Browser recorder fallback token: stored in `components/tooling/meticulous-recorder.tsx` per the Meticulous recorder-script setup already provided for this repository.
 
-The recorder script only renders in local development or Vercel preview deployments:
+`NEXT_PUBLIC_METICULOUS_PROJECT_ID` feeds the native recorder script token/project attribute. `NEXT_PUBLIC_ENABLE_METICULOUS_RECORDER=1` enables the recorder. The recorder script only renders in local development or Vercel preview deployments:
 
 - `process.env.NODE_ENV === "development"`
 - `process.env.VERCEL_ENV === "preview"`
@@ -61,9 +63,35 @@ The GitHub Actions workflow copies static Next.js assets after `npm run build` s
 The Meticulous action is configured with:
 
 ```yaml
+projects-yaml: |
+  ${{ vars.NEXT_PUBLIC_METICULOUS_PROJECT_ID }}:
+    api-token: ${{ secrets.METICULOUS_API_TOKEN }}
+    app-url: "http://localhost:3000"
 companion-assets-folder: "companion-assets"
 companion-assets-regex: "^/_next/static/"
 ```
+
+## Source Coverage
+
+Meticulous source coverage requires browser source maps to be served in the environment being tested. MokseRevamp enables this through Next.js:
+
+```ts
+productionBrowserSourceMaps: true
+```
+
+This emits `.js.map` files next to the compiled browser chunks in `/_next/static/`, which Meticulous can autodetect from the adjacent `.map` path or source map comments.
+
+Run the Meticulous CLI without putting the token directly in shell history:
+
+```powershell
+$env:METICULOUS_API_TOKEN = "<project-api-token>"
+npx @alwaysmeticulous/cli ci run-local `
+  --apiToken="$env:METICULOUS_API_TOKEN" `
+  --headless `
+  --appUrl https://mokserevamp.vercel.app/
+```
+
+Serving production source maps exposes client-side source maps publicly. Keep this enabled only while source coverage is required, or move coverage runs to preview deployments if production source-map exposure becomes unacceptable.
 
 ## Meticulous Project Setting
 
