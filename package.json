@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint . 2>&1",
     "typecheck": "tsc --noEmit 2>&1",
+    "test": "vitest run",
     "postinstall": "npx @chakra-ui/cli typegen ./components/ui/theme.ts"
   },
   "dependencies": {
@@ -33,7 +34,8 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "16.2.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.9"
   },
   "overrides": {
     "postcss": "8.5.10",
