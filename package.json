@@ -12,7 +12,7 @@
     "postinstall": "npx @chakra-ui/cli typegen ./components/ui/theme.ts"
   },
   "dependencies": {
-    "@chakra-ui/react": "^3.34.0",
+    "@chakra-ui/react": "^3.36.0",
     "@emotion/react": "^11.14.0",
     "@notionhq/client": "^5.16.0",
     "@sentry/nextjs": "^10.59.0",
