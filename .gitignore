@@ -56,3 +56,6 @@ AGENTS.md
 SECRET_README.md
 README.secret.md
 *.secret.md
+
+# Sentry Config File
+.env.sentry-build-plugin
